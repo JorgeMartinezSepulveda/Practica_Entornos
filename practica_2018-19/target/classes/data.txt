@@ -1,0 +1,5 @@
+- Nombre Jugador: pepito | Puntuacion: 2060
+- Nombre Jugador: pito | Puntuacion: 1560
+- Nombre Jugador: ito | Puntuacion: 1160
+- Nombre Jugador: lol | Puntuacion: 960
+- Nombre Jugador: pepi | Puntuacion: 460

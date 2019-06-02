@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+<meta charset="UTF-8" />
+
+<!-- Título de la página -->
+<title>SpaceWar!</title>
+
+<style> 
+	
+	textarea{
+		background-color: #aadef3;
+ 		border: 4px groove white;
+ 		border-radius: 5px;
+ 		padding: 2px 10px;
+ 		position: relative;
+ 		transform: translate(136%,-240%);
+ 		color: #000000;
+ 		resize: none;
+ 		display: none;
+	}
+	#nameFolder{
+		background-color: #aadef3;
+ 		border: 4px groove white;
+ 		border-radius: 5px;
+ 		padding: 2px 10px;
+ 		width: 130px;
+ 		height: 30px;
+		display: none;
+  		transform: translate(95%,-350%);
+	}
+	#message{
+		background-color: #aadef3;
+ 		border: 4px groove white;
+ 		border-radius: 5px;
+ 		padding: 2px 10px;
+ 		width: 355px;
+ 		height: 30px;
+  		transform: translate(136%,-400%);
+  		display: none;
+	}
+	
+</style>
+
+<!-- Cargamos los archivos JS -->
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+<script src="scripts/phaser.min.js"></script>
+<script src="src/states/boot.js"></script>
+<script src="src/states/preload.js"></script>
+<script src="src/states/menu.js"></script>
+<script src="src/states/lobby_1vs1.js"></script>
+<script src="src/states/lobby_battleR.js"></script>
+<script src="src/states/matchmaking.js"></script>
+<script src="src/states/room.js"></script>
+<script src="src/states/game.js"></script>
+<script src="src/index.js"></script>
+</head>
+
+<body>
+	<!-- div donde ubicaremos el juego -->
+	<div id="game">
+		<div id="gameDiv"></div>
+		<input id = "nameFolder" type="text" name="FirstName" placeholder = "(max 10 caracteres)"><br>
+		<input id = "message" type="text" placeholder = "Escribe aqui para chat"><br>
+		<textarea disabled id="chat" rows="10" cols="44"></textarea>
+	</div>
+	
+	
+</body>
+</html>
