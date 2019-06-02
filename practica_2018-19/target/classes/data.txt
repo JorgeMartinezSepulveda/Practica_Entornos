@@ -1,5 +1,4 @@
-- Nombre Jugador: pepito | Puntuacion: 2060
-- Nombre Jugador: pito | Puntuacion: 1560
-- Nombre Jugador: ito | Puntuacion: 1160
-- Nombre Jugador: lol | Puntuacion: 960
-- Nombre Jugador: pepi | Puntuacion: 460
+- Nombre Jugador: pedro | Puntuacion: 4500
+- Nombre Jugador: juan | Puntuacion: 3500
+- Nombre Jugador: lol | Puntuacion: 1500
+- Nombre Jugador: recatreinca | Puntuacion: 500
