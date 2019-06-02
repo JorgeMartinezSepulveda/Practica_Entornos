@@ -10,6 +10,8 @@ window.onload = function() {
 		myPlayer : new Object(),
 		otherPlayers : [],
 		projectiles : [],
+		playerRanking : [],
+		pointRanking : [],
 		nameP : undefined
 	}
 
@@ -52,6 +54,18 @@ window.onload = function() {
 					name : msg.room
 			}
 			break
+		case 'ROOMS':
+            if(msg.numSalas=="0"){
+                console.log("aun no hay salas")
+            }
+            else{
+                for (var sala of msg.salas) 
+                {
+                    console.log(sala.nombre);
+                    console.log(sala.jugadores);
+                }
+            }
+            break
 		case 'PLAYER MSG' :
 			var textarea = document.getElementById('chat');
 			var today = new Date();
@@ -59,9 +73,15 @@ window.onload = function() {
 			textarea.scrollTop = textarea.scrollHeight;
 			break
 		case 'PLAYERS RECORD' :
-			
+			var i = 0
 			for (var player of msg.players) 
 			{
+				
+				game.global.playerRanking[i] = player.name;
+				game.global.pointRanking[i] = player.record;
+				i++;
+
+				
 				var textarea = document.getElementById('chat');
 				$('#chat').val($('#chat').val() + "\n" + " " + player.name + ": " + player.record);
 				textarea.scrollTop = textarea.scrollHeight;

@@ -4,6 +4,18 @@ Spacewar.menuState = function(game) {
 	this.numStars = 100 // Should be canvas size dependant
 	this.enterKey
 	this.nameP
+	
+	this.ranking1 = "none"
+	this.ranking2 = "none"
+	this.ranking3 = "none"
+	this.ranking4 = "none"
+	this.ranking5 = "none"
+	this.ranking6 = "none"
+	this.ranking7 = "none"
+	this.ranking8 = "none"
+	this.ranking9 = "none"
+	this.ranking10 = "none"
+	
 }
 
 Spacewar.menuState.prototype = {
@@ -67,10 +79,21 @@ Spacewar.menuState.prototype = {
 		this.panel.width = 420
 		this.panel.height = 220
 		
-		this.letras_ranking1 = game.add.text(150, 420,'Introduzca un nombre',{font: "16px Arial", fill: 'white'});
+		this.letras_ranking1 = game.add.text(560, 125,'1. ' + this.ranking1,{font: "17px Arial", fill: 'white'});
+		this.letras_ranking2 = game.add.text(560, 155,'2. ' + this.ranking2,{font: "17px Arial", fill: 'white'});
+		this.letras_ranking3 = game.add.text(560, 185,'3. ' + this.ranking3,{font: "17px Arial", fill: 'white'});
+		this.letras_ranking4 = game.add.text(560, 215,'4. ' + this.ranking4,{font: "17px Arial", fill: 'white'});
+		this.letras_ranking5 = game.add.text(560, 245,'5. ' + this.ranking5,{font: "17px Arial", fill: 'white'});
+		this.letras_ranking6 = game.add.text(750, 125,' 6. ' + this.ranking6,{font: "17px Arial", fill: 'white'});
+		this.letras_ranking7 = game.add.text(750, 155,' 7. ' + this.ranking7,{font: "17px Arial", fill: 'white'})
+		this.letras_ranking8 = game.add.text(750, 185,' 8. ' + this.ranking8,{font: "17px Arial", fill: 'white'})
+		this.letras_ranking9 = game.add.text(750, 215,' 9. ' + this.ranking9,{font: "17px Arial", fill: 'white'})
+		this.letras_ranking10 = game.add.text(750, 245,'10. ' + this.ranking10,{font: "17px Arial", fill: 'white'})
 		
 		this.enterKey =  game.input.keyboard.addKey(Phaser.Keyboard.ENTER);
 		game.input.keyboard.addKeyCapture([ Phaser.Keyboard.ENTER ]);
+		
+		this.letras_ranking1.setText('1. ' + game.global.playerRanking[7])
 	},
 	
 	actionOnClick1: function () 
