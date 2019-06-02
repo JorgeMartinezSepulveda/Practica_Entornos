@@ -62,7 +62,7 @@ public class WebsocketGameHandler extends TextWebSocketHandler {
 				break;
 			case "JOIN ROOM":
 				msg.put("event", "NEW ROOM");
-				msg.put("room", "GLOBAL");
+				msg.put("room", "GLOBAL");	
 				player.getSession().sendMessage(new TextMessage(msg.toString()));
 				break;
 			case "PLAYERS RECORD":
@@ -136,8 +136,17 @@ public class WebsocketGameHandler extends TextWebSocketHandler {
 				player.getSession().sendMessage(new TextMessage(msg.toString()));				
 				break;
             case "NEW ROOM":
+            	msg.put("event", "NEW ROOM");
             	System.out.println("recibido mensaje, sala: "+node.get("name").asText());
-            	game.createRoom(node.get("name").asText(), node.get("tipo").asInt());
+            	if(game.createRoom(node.get("name").asText(), node.get("tipo").asInt())) {
+            		game.getSalas().get(node.get("name").asText()).addPlayer(player);
+            		msg.put("respuesta","Sala creada");
+            	}
+            	else {
+            		msg.put("respuesta","Sala ya existe");
+            	}
+            	player.getSession().sendMessage(new TextMessage(msg.toString()));
+            	
             	break;
 				
 			default:
