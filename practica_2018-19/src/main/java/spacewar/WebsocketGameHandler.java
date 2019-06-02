@@ -6,6 +6,8 @@ import java.io.FileReader;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Enumeration;
+import java.util.Set;
 import java.util.concurrent.atomic.AtomicInteger;
 
 import org.springframework.web.socket.CloseStatus;
@@ -77,9 +79,7 @@ public class WebsocketGameHandler extends TextWebSocketHandler {
 					jsonPlayer.put("record", puntuaciones[i]);
 					arrayNodePlayers.addPOJO(jsonPlayer);
 					i++;
-				}
-				
-				
+				}	
 				msg.put("event", "PLAYERS RECORD");
 				msg.putPOJO("players", arrayNodePlayers);
 				
@@ -113,6 +113,33 @@ public class WebsocketGameHandler extends TextWebSocketHandler {
 					game.addProjectile(projectile.getId(), projectile);
 				}
 				break;
+            case "ROOMS":
+				msg.put("event", "ROOMS");
+				ArrayNode arrayNodeSalas= mapper.createArrayNode();
+				//no concurrente
+				Object [] keySet=game.getSalas().keySet().toArray();
+				int j =0;
+				if (game.getNumSalas().equals("0")) {System.out.println("no salas");}
+				else {
+					while(j<keySet.length)
+					{
+						ObjectNode jsonSala = mapper.createObjectNode();
+						jsonSala.put("nombre",game.getSalas().get(keySet[j]).getNombre());
+						jsonSala.put("jugadores",game.getSalas().get(keySet[j]).getNumeroJugadores());
+						arrayNodeSalas.addPOJO(jsonSala);
+						System.out.println("el nombre "+game.getSalas().get(keySet[j]).getNombre());
+						j++;
+					}
+					msg.putPOJO("salas", arrayNodeSalas);
+				}
+				msg.put("numSalas",game.getNumSalas());
+				player.getSession().sendMessage(new TextMessage(msg.toString()));				
+				break;
+            case "NEW ROOM":
+            	System.out.println("recibido mensaje, sala: "+node.get("name").asText());
+            	game.createRoom(node.get("name").asText(), node.get("tipo").asInt());
+            	break;
+				
 			default:
 				break;
 			}

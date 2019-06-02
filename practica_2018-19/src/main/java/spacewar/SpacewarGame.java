@@ -32,6 +32,8 @@ public class SpacewarGame {
 	private Map<String, Player> players = new ConcurrentHashMap<>();
 	private Map<Integer, Projectile> projectiles = new ConcurrentHashMap<>();
 	private AtomicInteger numPlayers = new AtomicInteger();
+    private AtomicInteger numSalas=new AtomicInteger();
+    private static ConcurrentHashMap<String,Room> salas=new ConcurrentHashMap<String,Room>();
 
 	private SpacewarGame() {
 
@@ -100,6 +102,32 @@ public class SpacewarGame {
 				this.removePlayer(player);
 			}
 		}
+	}
+    
+    public String getNumSalas() {
+		return numSalas.toString();
+	}
+
+    public boolean createRoom(String nombre,int tipo) {
+    	System.out.println(nombre);
+    	System.out.println(tipo);
+        Room myrom=new Room(nombre,tipo);
+        if( salas.putIfAbsent(nombre, myrom)==null) {
+            numSalas.getAndIncrement();
+				return true;
+			}
+			else {
+				return false;
+			}
+    }
+	public boolean deleteRoom(String nombre) {
+			if (salas.remove(nombre)!=null) {
+				numSalas.getAndDecrement();
+				return true;
+			}
+			else {
+				return false;
+			}
 	}
 
 	private void tick() {
@@ -180,4 +208,10 @@ public class SpacewarGame {
 	public void handleCollision() {
 
 	}
+
+	public static ConcurrentHashMap<String, Room> getSalas() {
+		return salas;
+	}
+
+
 }
