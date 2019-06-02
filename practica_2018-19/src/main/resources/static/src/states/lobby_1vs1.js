@@ -143,11 +143,18 @@ Spacewar.lobby_1vs1State.prototype = {
 		this.panel_usuarios.height = 150
 		this.panel_usuarios.alpha = 0
 		
+		setInterval(function(){
+			let message={
+					event : 'ROOMS'
+			}
+			game.global.socket.send(JSON.stringify(message));
+		},500);
+		
 		this.enterKey =  game.input.keyboard.addKey(Phaser.Keyboard.ENTER);
 		game.input.keyboard.addKeyCapture([ Phaser.Keyboard.ENTER ]);
 		//game.state.start('matchmakingState')
 	},
-	
+		
 	actionOnClick: function () 
 	{
 		this.enSala = true
@@ -172,7 +179,8 @@ Spacewar.lobby_1vs1State.prototype = {
 			game.global.myPlayer.room = this.nombreSala
 			let message = {
 					event : 'NEW ROOM',
-					name : game.global.myPlayer.room
+					name : game.global.myPlayer.room,
+					tipo:'1'
 			}
 			game.global.socket.send(JSON.stringify(message))
 			
@@ -191,6 +199,7 @@ Spacewar.lobby_1vs1State.prototype = {
 		}
 	},
 
+	
 	update : function() {
 		if (this.enterKey.justDown) {
 			var input2 = $('#message');
