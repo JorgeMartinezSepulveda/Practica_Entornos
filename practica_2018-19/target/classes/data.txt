@@ -3,3 +3,8 @@
    denak   5500
    asd   0
    qwew   0
+   asd   0
+   loko   0
+   asd   0
+   j   0
+   asd   0

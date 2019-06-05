@@ -13,7 +13,8 @@ window.onload = function() {
 		playerRanking : [],
 		pointRanking : [],
 		nameP : undefined,
-		refreshRank : false
+		refreshRank : false,
+		numRooms: 0
 	}
 
 	// WEBSOCKET CONFIGURATOR
@@ -47,23 +48,34 @@ window.onload = function() {
 			}
 			break
 		case 'NEW ROOM' :
-			if (game.global.DEBUG_MODE) {
-				console.log('[DEBUG] NEW ROOM message recieved')
-				console.dir(msg)
-			}
-			game.global.myPlayer.room = {
-					name : msg.room
-			}
-			break
+            if (game.global.DEBUG_MODE) {
+                console.log('[DEBUG] NEW ROOM message recieved')
+                console.dir(msg)
+            }
+            if (msg.respuesta=="Sala creada"){
+                console.log("SUCCESS");
+            }
+            else{
+                console.log("error")
+            }
+            game.global.myPlayer.room = {
+                    name : msg.room
+            }
+            break
 		case 'ROOMS':
             if(msg.numSalas=="0"){
                 console.log("aun no hay salas")
             }
             else{
+                if(msg.numSalas != game.global.numRooms){
+                	 game.global.numRooms = msg.numSalas;
+                }
+               
                 for (var sala of msg.salas) 
                 {
                     console.log(sala.nombre);
                     console.log(sala.jugadores);
+                    console.log(game.global.numRooms)
                 }
             }
             break

@@ -11,6 +11,8 @@ Spacewar.lobby_1vs1State = function(game) {
 	
 	this.panel_usuarios
 	
+	this.cordX = 500
+	
 	this.button1
 	this.button2
 	this.button3
@@ -74,43 +76,43 @@ Spacewar.lobby_1vs1State.prototype = {
 		panel.width = 420
 		panel.height = 530
 		
-		this.button1 = this.game.add.button(586, 140, 'Panel_Sala', this.entrar_sala1, this,1,0);
+		this.button1 = this.game.add.button(586 + this.cordX, 140, 'Panel_Sala', this.entrar_sala1, this,1,0);
 		this.button1.width = 359
 		this.button1.height = 30
 		this.button1.inputEnabled = true
-		this.button2 = this.game.add.button(586, 180, 'Panel_Sala', this.entrar_sala2, this,1,0);
+		this.button2 = this.game.add.button(586 + this.cordX, 180, 'Panel_Sala', this.entrar_sala2, this,1,0);
 		this.button2.width = 359
 		this.button2.height = 30
 		this.button2.inputEnabled = true
-		this.button3 = this.game.add.button(586, 220, 'Panel_Sala', this.entrar_sala3, this,1,0);
+		this.button3 = this.game.add.button(586 + this.cordX, 220, 'Panel_Sala', this.entrar_sala3, this,1,0);
 		this.button3.width = 359
 		this.button3.height = 30
 		this.button3.inputEnabled = true
-		this.button4 = this.game.add.button(586, 260, 'Panel_Sala', this.entrar_sala4, this,1,0);
+		this.button4 = this.game.add.button(586 + this.cordX, 260, 'Panel_Sala', this.entrar_sala4, this,1,0);
 		this.button4.width = 359
 		this.button4.height = 30
 		this.button4.inputEnabled = true
-		this.button5 = this.game.add.button(586, 300, 'Panel_Sala', this.entrar_sala5, this,1,0);
+		this.button5 = this.game.add.button(586 + this.cordX, 300, 'Panel_Sala', this.entrar_sala5, this,1,0);
 		this.button5.width = 359
 		this.button5.height = 30
 		this.button5.inputEnabled = true
-		this.button6 = this.game.add.button(586, 340, 'Panel_Sala', this.entrar_sala6, this,1,0);
+		this.button6 = this.game.add.button(586 + this.cordX, 340, 'Panel_Sala', this.entrar_sala6, this,1,0);
 		this.button6.width = 359
 		this.button6.height = 30
 		this.button6.inputEnabled = true
-		this.button7 = this.game.add.button(586, 380, 'Panel_Sala', this.entrar_sala7, this,1,0);
+		this.button7 = this.game.add.button(586 + this.cordX, 380, 'Panel_Sala', this.entrar_sala7, this,1,0);
 		this.button7.width = 359
 		this.button7.height = 30
 		this.button7.inputEnabled = true
-		this.button8 = this.game.add.button(586, 420, 'Panel_Sala', this.entrar_sala8, this,1,0);
+		this.button8 = this.game.add.button(586 + this.cordX, 420, 'Panel_Sala', this.entrar_sala8, this,1,0);
 		this.button8.width = 359
 		this.button8.height = 30
 		this.button8.inputEnabled = true
-		this.button9 = this.game.add.button(586, 460, 'Panel_Sala', this.entrar_sala9, this,1,0);
+		this.button9 = this.game.add.button(586 + this.cordX, 460, 'Panel_Sala', this.entrar_sala9, this,1,0);
 		this.button9.width = 359
 		this.button9.height = 30
 		this.button9.inputEnabled = true
-		this.button10 = this.game.add.button(586, 500, 'Panel_Sala', this.entrar_sala10, this,1,0);
+		this.button10 = this.game.add.button(586 + this.cordX, 500, 'Panel_Sala', this.entrar_sala10, this,1,0);
 		this.button10.width = 359
 		this.button10.height = 30
 		this.button10.inputEnabled = true
