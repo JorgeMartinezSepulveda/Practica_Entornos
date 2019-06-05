@@ -1,6 +1,7 @@
 package spacewar;
 
 import java.util.concurrent.ArrayBlockingQueue;
+import java.util.concurrent.Semaphore;
 import java.util.concurrent.atomic.AtomicInteger;
 
 public class Room {
@@ -15,6 +16,10 @@ public class Room {
 	
 	private int tipo;
 
+	private Semaphore sem=new Semaphore(1);
+	
+	private Semaphore numToString=new Semaphore(1);
+	
 	public Room(String no,int tip) {
 			this.nombre=no;
 			this.numeroJugadores=new AtomicInteger(0);
@@ -46,17 +51,36 @@ public class Room {
 		return nombre;
 	}
 
-	public void addPlayer(Player j) {
-		this.jugadores.add(j.getPlayerId());
-		this.numeroJugadores.getAndIncrement();
+	public boolean addPlayer(Player j) throws InterruptedException{
+			sem.acquire();
+			if(!esLlena()) {
+				this.jugadores.add(j.getPlayerId());
+				this.numeroJugadores.getAndIncrement();
+				sem.release();
+				return true;
+			}
+			else {
+				sem.release();
+				return false;
+			}
+			
 	}
 	
-	public void removePlayer(Player j) {
-		this.jugadores.remove(j.getPlayerId());
-		this.numeroJugadores.getAndDecrement();
+	public boolean removePlayer(Player j)throws InterruptedException{
+			sem.acquire();
+			if(!numeroJugadores.compareAndSet(0,0)) {
+				this.jugadores.remove(j.getPlayerId());
+				this.numeroJugadores.getAndDecrement();
+				sem.release();
+				return true;
+			}
+			else {
+				sem.release();
+				return false;
+			}
 	}
 	
-	public String getNumeroJugadores() {
+	public synchronized String getNumeroJugadores(){
 		return this.numeroJugadores.toString();
 	}
 	

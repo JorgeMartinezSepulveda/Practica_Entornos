@@ -12,6 +12,7 @@ import java.util.Collection;
 import java.util.Enumeration;
 import java.util.Set;
 import java.util.concurrent.atomic.AtomicInteger;
+import java.util.concurrent.locks.ReentrantLock;
 
 import org.springframework.web.socket.CloseStatus;
 import org.springframework.web.socket.TextMessage;
@@ -32,6 +33,7 @@ public class WebsocketGameHandler extends TextWebSocketHandler {
 	private ObjectMapper mapper = new ObjectMapper();
 	private AtomicInteger playerId = new AtomicInteger(0);
 	private AtomicInteger projectileId = new AtomicInteger(0);
+	private ReentrantLock lock=new ReentrantLock();
 	
 	private ObjectMapper json = new ObjectMapper().setVisibility(PropertyAccessor.FIELD, Visibility.ANY);
 
@@ -66,14 +68,20 @@ public class WebsocketGameHandler extends TextWebSocketHandler {
 			case "JOIN ROOM":
 				msg.put("event", "NEW ROOM");
 				msg.put("room", "GLOBAL");	
+				//arreglar, necesito el nombre de la sala desde javascript
+				if(game.getSalas().get("nombre de mi sala").addPlayer(player)) {
+					msg.put("respuesta", "jugador ha entrado");
+				}
+				else {
+					msg.put("respuesta", "error al conectar");
+				}
 				player.getSession().sendMessage(new TextMessage(msg.toString()));
 				break;
 			case "PLAYERS RECORD":
 				ArrayNode arrayNodePlayers = mapper.createArrayNode();
-				
+				lock.lock();
 				String[] nombres = getRecordNames().toArray(new String[getRecordNames().size()]);
 				String[] puntuaciones =   getRecordPoints().toArray(new String[getRecordPoints().size()]);
-				
 				int[] puntuacionesAux = new int[puntuaciones.length];
 				
 				for (int i = 0; i < puntuaciones.length; i++) {
@@ -90,6 +98,9 @@ public class WebsocketGameHandler extends TextWebSocketHandler {
 				}
 				
 				for (int j = 0; j < nombres.length; j++) {
+					if(player.getName().equals(nombres[j])) {
+						player.setPuntuacion(puntuaciones[j]);
+					}
 					ObjectNode jsonPlayer = mapper.createObjectNode();
 					jsonPlayer.put("name", nombres[j]);
 					jsonPlayer.put("record", puntuaciones[j]);
@@ -98,7 +109,7 @@ public class WebsocketGameHandler extends TextWebSocketHandler {
 				
 				msg.put("event", "PLAYERS RECORD");
 				msg.putPOJO("players", arrayNodePlayers);
-				
+				lock.unlock();
 				player.getSession().sendMessage(new TextMessage(msg.toString()));
 				break;
 			case "PLAYER NAME":
@@ -158,6 +169,7 @@ public class WebsocketGameHandler extends TextWebSocketHandler {
             	if(game.createRoom(node.get("name").asText(), node.get("tipo").asInt())) {
             		game.getSalas().get(node.get("name").asText()).addPlayer(player);
             		msg.put("respuesta","Sala creada");
+            		msg.put("room", node.get("name").asText());
             	}
             	else {
             		msg.put("respuesta","Sala ya existe");

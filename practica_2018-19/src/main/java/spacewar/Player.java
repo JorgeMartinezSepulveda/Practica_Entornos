@@ -1,6 +1,8 @@
 package spacewar;
 
 import java.util.Random;
+import java.util.concurrent.Semaphore;
+import java.util.concurrent.atomic.AtomicInteger;
 
 import org.springframework.web.socket.TextMessage;
 import org.springframework.web.socket.WebSocketSession;
@@ -11,23 +13,18 @@ public class Player extends Spaceship {
 	private final int playerId;
 	private final String shipType;
 	private String name;
-	private int vida;
+	public AtomicInteger vida=new AtomicInteger(100);
+	private AtomicInteger fuel=new AtomicInteger(100);
+	private AtomicInteger puntuacion=new AtomicInteger();
+	private Semaphore isHit=new Semaphore(1);
 
 	public Player(int playerId, WebSocketSession session) {
 		this.playerId = playerId;
 		this.session = session;
 		this.shipType = this.getRandomShipType();
 		this.name = null;
-		this.vida = 100;
 	}
 	
-	public int getVida() {
-		return vida;
-	}
-
-	public void setVida(int vida) {
-		this.vida = vida;
-	}
 
 	public String getName() {
 		return name;
@@ -59,4 +56,27 @@ public class Player extends Spaceship {
 		ship += "_0" + (new Random().nextInt(5) + 1) + ".png";
 		return ship;
 	}
+	
+	public void hit(Player p) {
+		try {
+			isHit.acquire();
+			if(this.vida.get()>=20) {
+				p.puntuacion.getAndAdd(1);
+				this.vida.addAndGet(-20);
+			}
+			else{
+				p.puntuacion.getAndAdd(20);
+				this.vida.set(0);
+			}
+		} catch (InterruptedException e) {
+			e.printStackTrace();
+		}finally {
+			isHit.release();
+		}
+	}
+	 public void setPuntuacion(String puntuaciones) {
+		 int i=Integer.parseInt(puntuaciones);
+		 this.puntuacion.getAndAdd(i);
+	 }
+		
 }

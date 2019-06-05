@@ -163,8 +163,9 @@ public class SpacewarGame {
 						// System.out.println("Player " + player.getPlayerId() + " was hit!!!");
 						
 						//
-						player.getPlayerId();
+						player.hit(projectile.getOwner());
 						//
+						
 						
 						projectile.setHit(true);
 						break;
