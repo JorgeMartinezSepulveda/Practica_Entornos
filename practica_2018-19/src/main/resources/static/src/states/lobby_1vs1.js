@@ -384,66 +384,82 @@ Spacewar.lobby_1vs1State.prototype = {
 				game.global.refreshRooms = false
 			}
 		
-
-	
-
-
-
-if (this.button1.input.pointerOver()) 
-{
-	this.panel_usuarios.alpha = 1
-	this.panel_usuarios.y = this.button1.y+40
-	this.nombreJugador.alpha = 1
-}
-else if(this.button2.input.pointerOver())
-{
-	this.panel_usuarios.alpha = 1
-	this.panel_usuarios.y = this.button2.y+40
-}
-else if(this.button3.input.pointerOver())
-{
-	this.panel_usuarios.alpha = 1
-	this.panel_usuarios.y = this.button3.y+40
-}
-else if(this.button4.input.pointerOver())
-{
-	this.panel_usuarios.alpha = 1
-	this.panel_usuarios.y = this.button4.y+40
-}
-else if(this.button5.input.pointerOver())
-{
-	this.panel_usuarios.alpha = 1
-	this.panel_usuarios.y = this.button5.y+40
-}
-else if(this.button6.input.pointerOver())
-{
-	this.panel_usuarios.alpha = 1
-	this.panel_usuarios.y = this.button6.y+40
-}
-else if(this.button7.input.pointerOver())
-{
-	this.panel_usuarios.alpha = 1
-	this.panel_usuarios.y = this.button7.y+40
-}
-else if(this.button8.input.pointerOver())
-{
-	this.panel_usuarios.alpha = 1
-	this.panel_usuarios.y = this.button3.y+40
-}
-else if(this.button9.input.pointerOver())
-{
-	this.panel_usuarios.alpha = 1
-	this.panel_usuarios.y = this.button4.y+40
-}
-else if(this.button10.input.pointerOver())
-{
-	this.panel_usuarios.alpha = 1
-	this.panel_usuarios.y = this.button5.y+40
-}
-else
-{
-	this.nombreJugador.alpha = 0
-	this.panel_usuarios.alpha = 0
-}
-}
+			
+			if (this.button1.input.pointerOver()) 
+			{
+				this.panel_usuarios.alpha = 1
+				this.panel_usuarios.y = this.button1.y+40
+				this.nombreJugador.y = 235 
+				this.nombreJugador.alpha = 1
+				this.nombreJugador.setText("1. " + game.global.onevsoneRoom[0].usuarios[0])
+			}
+			else if(this.button2.input.pointerOver())
+			{
+				this.panel_usuarios.alpha = 1
+				this.panel_usuarios.y = this.button2.y+40
+				this.nombreJugador.y = this.button2.y+100
+				this.nombreJugador.alpha = 1
+			}
+			else if(this.button3.input.pointerOver())
+			{
+				this.panel_usuarios.alpha = 1
+				this.panel_usuarios.y = this.button3.y+40
+				this.nombreJugador.y = this.button3.y+100
+				this.nombreJugador.alpha = 1
+			}
+			else if(this.button4.input.pointerOver())
+			{
+				this.panel_usuarios.alpha = 1
+				this.panel_usuarios.y = this.button4.y+40
+				this.nombreJugador.y = this.button4.y+100
+				this.nombreJugador.alpha = 1
+			}
+			else if(this.button5.input.pointerOver())
+			{
+				this.panel_usuarios.alpha = 1
+				this.panel_usuarios.y = this.button5.y+40
+				this.nombreJugador.y = this.button5.y+100
+				this.nombreJugador.alpha = 1
+			}
+			else if(this.button6.input.pointerOver())
+			{
+				this.panel_usuarios.alpha = 1
+				this.panel_usuarios.y = this.button6.y+40
+				this.nombreJugador.y = this.button6.y+100
+				this.nombreJugador.alpha = 1
+			}
+			else if(this.button7.input.pointerOver())
+			{
+				this.panel_usuarios.alpha = 1
+				this.panel_usuarios.y = this.button7.y+40
+				this.nombreJugador.y = this.button7.y+100
+				this.nombreJugador.alpha = 1
+			}
+			else if(this.button8.input.pointerOver())
+			{
+				this.panel_usuarios.alpha = 1
+				this.panel_usuarios.y = this.button3.y+40
+				this.nombreJugador.y = this.button3.y+100
+				this.nombreJugador.alpha = 1
+			}
+			else if(this.button9.input.pointerOver())
+			{
+				this.panel_usuarios.alpha = 1
+				this.panel_usuarios.y = this.button4.y+40
+				this.nombreJugador.y = this.button4.y+100
+				this.nombreJugador.alpha = 1
+			}
+			else if(this.button10.input.pointerOver())
+			{
+				this.panel_usuarios.alpha = 1
+				this.panel_usuarios.y = this.button5.y+40
+				this.nombreJugador.y = this.button5.y+100
+				this.nombreJugador.alpha = 1
+			}
+			else
+			{
+				this.nombreJugador.alpha = 0
+				this.panel_usuarios.alpha = 0
+			}
+		}
 }

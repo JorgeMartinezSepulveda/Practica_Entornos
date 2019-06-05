@@ -12,7 +12,7 @@ public class Room {
 	
 	private int maximoJugadores;
 	
-	private ArrayBlockingQueue<Integer> jugadores;
+	private ArrayBlockingQueue<String> jugadores;
 	
 	private int tipo;
 
@@ -35,7 +35,7 @@ public class Room {
 				System.out.println("Error");
 				break;
 			}
-			this.jugadores=new ArrayBlockingQueue<Integer>(this.maximoJugadores);
+			this.jugadores=new ArrayBlockingQueue<String>(this.maximoJugadores);
 
 	}
 	
@@ -51,7 +51,7 @@ public class Room {
 		return this.numeroJugadores.compareAndSet(this.maximoJugadores, this.maximoJugadores);
 	}
 
-	public ArrayBlockingQueue<Integer> getJugadores() {
+	public ArrayBlockingQueue<String> getJugadores() {
 		return jugadores;
 	}
 
@@ -62,7 +62,7 @@ public class Room {
 	public boolean addPlayer(Player j) throws InterruptedException{
 			sem.acquire();
 			if(!esLlena()) {
-				this.jugadores.add(j.getPlayerId());
+				this.jugadores.add(j.getSession().getId());
 				this.numeroJugadores.getAndIncrement();
 				sem.release();
 				return true;
@@ -77,7 +77,7 @@ public class Room {
 	public boolean removePlayer(Player j)throws InterruptedException{
 			sem.acquire();
 			if(!numeroJugadores.compareAndSet(0,0)) {
-				this.jugadores.remove(j.getPlayerId());
+				this.jugadores.remove(j.getSession().getId());
 				this.numeroJugadores.getAndDecrement();
 				sem.release();
 				return true;

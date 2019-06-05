@@ -14,6 +14,7 @@ window.onload = function() {
 		pointRanking : [],
 		onevsoneRoom : [],
 		battleRoom : [],
+		pagRooms : 0,
 		nameP : undefined,
 		refreshRank : false,
 		refreshRooms : false,
@@ -89,6 +90,7 @@ window.onload = function() {
                 		
                 		if(!igual){
                 			game.global.onevsoneRoom[i] = sala
+                			//console.log(game.global.onevsoneRoom[i].usuarios[0])
                     		//console.log(game.global.onevsoneRoom[1].nombre)
                 		}
                 		

@@ -160,6 +160,18 @@ public class WebsocketGameHandler extends TextWebSocketHandler {
 						jsonSala.put("nombre",game.getSalas().get(keySet[j]).getNombre());
 						jsonSala.put("jugadores",game.getSalas().get(keySet[j]).getNumeroJugadores());
 						jsonSala.put("tipo",game.getSalas().get(keySet[j]).getMaximoJugadores());
+						
+						ArrayNode arrayNodeJugd = mapper.createArrayNode();
+						
+						int numJugadores = game.getSalas().get(keySet[j]).getJugadores().size();
+						for (int i = 0; i < numJugadores; i++)
+						{
+							Player jgd = game.getPlayer(game.getSalas().get(keySet[j]).getJugadores().peek());
+							arrayNodeJugd.add(jgd.getName());
+						}
+						
+						jsonSala.putPOJO("usuarios",arrayNodeJugd);
+						
 						arrayNodeSalas.addPOJO(jsonSala);
 						System.out.println("el nombre "+game.getSalas().get(keySet[j]).getNombre());
 						j++;
