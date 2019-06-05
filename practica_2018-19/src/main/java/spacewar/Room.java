@@ -39,6 +39,14 @@ public class Room {
 
 	}
 	
+	public int getMaximoJugadores() {
+		return maximoJugadores;
+	}
+
+	public void setMaximoJugadores(int maximoJugadores) {
+		this.maximoJugadores = maximoJugadores;
+	}
+
 	public boolean esLlena() {
 		return this.numeroJugadores.compareAndSet(this.maximoJugadores, this.maximoJugadores);
 	}

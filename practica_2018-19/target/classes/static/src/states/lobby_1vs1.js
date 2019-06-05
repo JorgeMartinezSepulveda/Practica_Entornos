@@ -7,6 +7,8 @@ Spacewar.lobby_1vs1State = function(game) {
 	this.estado_jugador = 'Esperando sala'
 	this.enSala = false
 	
+	this.numSalas = 0
+	
 	this.button_crear
 	
 	this.panel_usuarios
@@ -24,6 +26,8 @@ Spacewar.lobby_1vs1State = function(game) {
 	this.button9
 	this.button10	
 	
+	this.nombreJugador
+	
 	this.texto_numJugadores1  = 0
 	this.texto_numJugadores2  = 0
 	this.texto_numJugadores3  = 0
@@ -34,6 +38,17 @@ Spacewar.lobby_1vs1State = function(game) {
 	this.texto_numJugadores8  = 0
 	this.texto_numJugadores9  = 0
 	this.texto_numJugadores10 = 0
+	
+	this.letras_titulo1
+	this.letras_titulo2 
+	this.letras_titulo3  
+	this.letras_titulo4 
+	this.letras_titulo5 
+	this.letras_titulo6 
+	this.letras_titulo7  
+	this.letras_titulo8  
+	this.letras_titulo9  
+	this.letras_titulo10 
 	
 	this.texto_sala1  = 'Empty slot 1'
 	this.texto_sala2  = 'Empty slot 2'
@@ -117,16 +132,16 @@ Spacewar.lobby_1vs1State.prototype = {
 		this.button10.height = 30
 		this.button10.inputEnabled = true
 		
-		letras_titulo1  = this.game.add.text(600, 146,this.texto_sala1,{font: " 18px Arial", fill: 'black'});
-		letras_titulo2  = this.game.add.text(600, 186,this.texto_sala2,{font: " 18px Arial", fill: 'black'});
-		letras_titulo3  = this.game.add.text(600, 226,this.texto_sala3,{font: " 18px Arial", fill: 'black'});
-		letras_titulo4  = this.game.add.text(600, 266,this.texto_sala4,{font: " 18px Arial", fill: 'black'});
-		letras_titulo5  = this.game.add.text(600, 306,this.texto_sala5,{font: " 18px Arial", fill: 'black'});
-		letras_titulo6  = this.game.add.text(600, 346,this.texto_sala6,{font: " 18px Arial", fill: 'black'});
-		letras_titulo7  = this.game.add.text(600, 386,this.texto_sala7,{font: " 18px Arial", fill: 'black'});
-		letras_titulo8  = this.game.add.text(600, 426,this.texto_sala8,{font: " 18px Arial", fill: 'black'});
-		letras_titulo9  = this.game.add.text(600, 465,this.texto_sala9,{font: " 18px Arial", fill: 'black'});
-		letras_titulo10 = this.game.add.text(600, 505,this.texto_sala10,{font: " 18px Arial", fill: 'black'});
+		this.letras_titulo1  = this.game.add.text(600, 146,this.texto_sala1,{font: " 18px Arial", fill: 'black'});
+		this.letras_titulo2  = this.game.add.text(600, 186,this.texto_sala2,{font: " 18px Arial", fill: 'black'});
+		this.letras_titulo3  = this.game.add.text(600, 226,this.texto_sala3,{font: " 18px Arial", fill: 'black'});
+		this.letras_titulo4  = this.game.add.text(600, 266,this.texto_sala4,{font: " 18px Arial", fill: 'black'});
+		this.letras_titulo5  = this.game.add.text(600, 306,this.texto_sala5,{font: " 18px Arial", fill: 'black'});
+		this.letras_titulo6  = this.game.add.text(600, 346,this.texto_sala6,{font: " 18px Arial", fill: 'black'});
+		this.letras_titulo7  = this.game.add.text(600, 386,this.texto_sala7,{font: " 18px Arial", fill: 'black'});
+		this.letras_titulo8  = this.game.add.text(600, 426,this.texto_sala8,{font: " 18px Arial", fill: 'black'});
+		this.letras_titulo9  = this.game.add.text(600, 465,this.texto_sala9,{font: " 18px Arial", fill: 'black'});
+		this.letras_titulo10 = this.game.add.text(600, 505,this.texto_sala10,{font: " 18px Arial", fill: 'black'});
 		
 		panel_escogida1 = this.game.add.sprite(45, 35, 'Panel_Sala_Escogida');
 		panel_escogida1.width = 460
@@ -144,6 +159,9 @@ Spacewar.lobby_1vs1State.prototype = {
 		this.panel_usuarios.width = 165
 		this.panel_usuarios.height = 150
 		this.panel_usuarios.alpha = 0
+		
+		this.nombreJugador = this.game.add.text(810, 235,"1. Nombre",{font: " 18px Arial", fill: 'white'});
+		this.nombreJugador.alpha = 0
 		
 		setInterval(function(){
 			let message={
@@ -182,7 +200,7 @@ Spacewar.lobby_1vs1State.prototype = {
 			let message = {
 					event : 'NEW ROOM',
 					name : game.global.myPlayer.room,
-					tipo:'1'
+					tipo:'0'
 			}
 			game.global.socket.send(JSON.stringify(message))
 			
@@ -223,10 +241,75 @@ Spacewar.lobby_1vs1State.prototype = {
 			}	
 		}
 		
+		if(game.global.refreshRooms == true)
+		{
+			if(this.numSalas != game.global.onevsoneRoom.length)
+			{
+				if(this.numSalas < game.global.onevsoneRoom.length)
+				{
+					var aux = game.global.onevsoneRoom.length - this.numSalas
+					for (var i = 0; i < aux; i++) {
+						switch(this.numSalas){
+							case 0:
+								this.button1.x = this.button1.x - this.cordX
+								this.texto_sala1 = game.global.onevsoneRoom[this.numSalas].nombre
+								this.letras_titulo1.setText("Sala " + this.texto_sala1)
+								this.numSalas = 1
+								break;
+							case 1:
+								this.button2.x = this.button2.x - this.cordX
+								this.texto_sala2 = game.global.onevsoneRoom[this.numSalas].nombre
+								this.letras_titulo2.setText("Sala " + this.texto_sala2)
+								this.numSalas = 2
+								break;
+							case 2:
+								this.button3.x = this.button3.x - this.cordX
+								this.texto_sala3 = game.global.onevsoneRoom[this.numSalas].nombre
+								this.letras_titulo3.setText("Sala " + this.texto_sala3)
+								this.numSalas = 3
+								break;
+							case 3:
+								
+								break;
+							case 4:
+								
+								break;
+							case 5:
+								
+								break;
+							case 6:
+								
+								break;
+							case 7:
+								
+								break;
+							case 8:
+								
+								break;
+							case 9:
+								
+								break;
+							case 10:
+								
+								break;
+							
+						}
+					}
+				}
+				else if(this.numSalas > game.global.onevsoneRoom.length)
+				{
+					
+				}
+			}
+			
+			game.global.refreshRooms = false
+		}
+		
 		if (this.button1.input.pointerOver()) 
 		{
 			this.panel_usuarios.alpha = 1
 			this.panel_usuarios.y = this.button1.y+40
+			this.nombreJugador.alpha = 1
 		}
 		else if(this.button2.input.pointerOver())
 		{
@@ -275,6 +358,7 @@ Spacewar.lobby_1vs1State.prototype = {
 		}
 		else
 		{
+			this.nombreJugador.alpha = 0
 			this.panel_usuarios.alpha = 0
 		}
 	}

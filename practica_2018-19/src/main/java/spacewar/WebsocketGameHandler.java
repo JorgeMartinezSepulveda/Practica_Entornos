@@ -98,9 +98,14 @@ public class WebsocketGameHandler extends TextWebSocketHandler {
 				}
 				
 				for (int j = 0; j < nombres.length; j++) {
-					if(player.getName().equals(nombres[j])) {
-						player.setPuntuacion(puntuaciones[j]);
+					if(player.getName() != null) 
+					{
+						if(player.getName().equals(nombres[j])) 
+						{
+							player.setPuntuacion(puntuaciones[j]);
+						}
 					}
+					
 					ObjectNode jsonPlayer = mapper.createObjectNode();
 					jsonPlayer.put("name", nombres[j]);
 					jsonPlayer.put("record", puntuaciones[j]);
@@ -154,6 +159,7 @@ public class WebsocketGameHandler extends TextWebSocketHandler {
 						ObjectNode jsonSala = mapper.createObjectNode();
 						jsonSala.put("nombre",game.getSalas().get(keySet[j]).getNombre());
 						jsonSala.put("jugadores",game.getSalas().get(keySet[j]).getNumeroJugadores());
+						jsonSala.put("tipo",game.getSalas().get(keySet[j]).getMaximoJugadores());
 						arrayNodeSalas.addPOJO(jsonSala);
 						System.out.println("el nombre "+game.getSalas().get(keySet[j]).getNombre());
 						j++;

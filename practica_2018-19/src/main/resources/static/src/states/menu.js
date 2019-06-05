@@ -191,6 +191,8 @@ Spacewar.menuState.prototype = {
 		}
 		
 		if(game.global.refreshRank == true){
+			game.global.refreshRank = false
+			
 			if(game.global.playerRanking[0] != undefined){
 				this.letras_ranking1.setText('1. ' + game.global.playerRanking[0] + ' ' + game.global.pointRanking[0])
 			}
