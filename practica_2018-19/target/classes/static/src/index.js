@@ -12,7 +12,8 @@ window.onload = function() {
 		projectiles : [],
 		playerRanking : [],
 		pointRanking : [],
-		nameP : undefined
+		nameP : undefined,
+		refreshRank : false
 	}
 
 	// WEBSOCKET CONFIGURATOR
@@ -76,18 +77,12 @@ window.onload = function() {
 			var i = 0
 			for (var player of msg.players) 
 			{
-				
 				game.global.playerRanking[i] = player.name;
 				game.global.pointRanking[i] = player.record;
 				i++;
-
-				
-				var textarea = document.getElementById('chat');
-				$('#chat').val($('#chat').val() + "\n" + " " + player.name + ": " + player.record);
-				textarea.scrollTop = textarea.scrollHeight;
 			}
 			
-			
+			game.global.refreshRank = true
 			break
 		case 'GAME STATE UPDATE' :
 			if (game.global.DEBUG_MODE) {

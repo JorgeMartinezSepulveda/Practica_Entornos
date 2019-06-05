@@ -2,8 +2,11 @@ package spacewar;
 
 import java.io.BufferedReader;
 import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
 import java.io.FileReader;
 import java.io.IOException;
+import java.io.PrintWriter;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Enumeration;
@@ -68,18 +71,31 @@ public class WebsocketGameHandler extends TextWebSocketHandler {
 			case "PLAYERS RECORD":
 				ArrayNode arrayNodePlayers = mapper.createArrayNode();
 				
-				String[] nombres = getRecordNames();
-				String[] puntuaciones = getRecordPoints();
+				String[] nombres = getRecordNames().toArray(new String[getRecordNames().size()]);
+				String[] puntuaciones =   getRecordPoints().toArray(new String[getRecordPoints().size()]);
 				
-				int i = 0;
-				while(nombres[i] != null)
-				{
+				int[] puntuacionesAux = new int[puntuaciones.length];
+				
+				for (int i = 0; i < puntuaciones.length; i++) {
+					puntuacionesAux[i] = Integer.parseInt(puntuaciones[i]);
+				}
+				
+				int n = puntuacionesAux.length;
+				for (int i = 0; i <= n - 2; i++) {
+					for (int j = n - 1; j > i; j--) {
+					 	if (puntuacionesAux[j - 1] < puntuacionesAux[j]) {
+						 	permuta(puntuacionesAux,puntuaciones,nombres, j - 1, j);
+					 	}
+				 	}
+				}
+				
+				for (int j = 0; j < nombres.length; j++) {
 					ObjectNode jsonPlayer = mapper.createObjectNode();
-					jsonPlayer.put("name", nombres[i]);
-					jsonPlayer.put("record", puntuaciones[i]);
+					jsonPlayer.put("name", nombres[j]);
+					jsonPlayer.put("record", puntuaciones[j]);
 					arrayNodePlayers.addPOJO(jsonPlayer);
-					i++;
 				}	
+				
 				msg.put("event", "PLAYERS RECORD");
 				msg.putPOJO("players", arrayNodePlayers);
 				
@@ -91,6 +107,7 @@ public class WebsocketGameHandler extends TextWebSocketHandler {
 				
 				//Comprobamos que el jugador se a actualizado y ha añadido su nombre
 				game.setPlayerName(player);
+				register(player);
 				System.out.println(game.getPlayer(player.getSession().getId()).getName());
 				
 				break;
@@ -159,6 +176,20 @@ public class WebsocketGameHandler extends TextWebSocketHandler {
 		}
 	}
 	
+	private static void permuta(int[] a,String[] b,String[] c, int i, int j) {
+	    int t;
+	    String f,l;
+	    t = a[i];
+	    f = b[i];
+	    l = c[i];
+	    a[i] = a[j];
+	    b[i] = b[j];
+	    c[i] = c[j];
+	    a[j] = t;
+	    b[j] = f;
+	    c[j] = l;
+	}
+	
 	private void sendOtherParticipants(WebSocketSession session, ObjectNode msg) throws IOException {
 		Collection <Player> players = game.getPlayers();
 	
@@ -169,38 +200,44 @@ public class WebsocketGameHandler extends TextWebSocketHandler {
 		}
 	}
 	
-	public String[] getRecordNames() throws IOException{
+	private void register (Player player) throws IOException {
+		
+		PrintWriter pw = new PrintWriter (new FileOutputStream(new File("target/classes/data.txt"),true));
+		
+		pw.append("   " + player.getName());
+		pw.print("   0");
+		
+		pw.println();
+		
+		pw.close();
+	}
+	
+	public ArrayList<String> getRecordNames() throws IOException{
 		
 		BufferedReader historial = new BufferedReader(new FileReader (new File("target/classes/data.txt")));
 		String line;
-		String [] nombre = new String [200];
-		int aux  = 0;
+		ArrayList<String> nombre = new ArrayList <String>();
 
-		while(((line = historial.readLine()) != null)&&(aux<200)) 
+		while((line = historial.readLine()) != null) 
 		{
 			String [] splited = line.split(" ");
-			nombre[aux] = splited[3];
-			aux++;
-			
+			nombre.add(splited[3]);
 		}
 		
 		historial.close();
 		return nombre;
 	}
 	
-	public String[] getRecordPoints() throws IOException{
+	public ArrayList<String> getRecordPoints() throws IOException{
 		
 		BufferedReader historial = new BufferedReader(new FileReader (new File("target/classes/data.txt")));
 		String line;
-		String [] puntuacion = new String [200];
-		int aux  = 0;
+		ArrayList<String> puntuacion = new ArrayList <String>();
 
-		while(((line = historial.readLine()) != null)&&(aux<200)) 
+		while((line = historial.readLine()) != null)
 		{
 				String [] splited = line.split(" ");
-				puntuacion[aux] = splited[6];
-				aux++;
-			
+				puntuacion.add(splited[6]);
 		}
 		
 		historial.close();

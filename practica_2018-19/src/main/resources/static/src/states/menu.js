@@ -5,16 +5,16 @@ Spacewar.menuState = function(game) {
 	this.enterKey
 	this.nameP
 	
-	this.ranking1 = "none"
-	this.ranking2 = "none"
-	this.ranking3 = "none"
-	this.ranking4 = "none"
-	this.ranking5 = "none"
-	this.ranking6 = "none"
-	this.ranking7 = "none"
-	this.ranking8 = "none"
-	this.ranking9 = "none"
-	this.ranking10 = "none"
+	this.ranking1 = "-------------"
+	this.ranking2 = "-------------"
+	this.ranking3 = "-------------"
+	this.ranking4 = "-------------"
+	this.ranking5 = "-------------"
+	this.ranking6 = "-------------"
+	this.ranking7 = "-------------"
+	this.ranking8 = "-------------"
+	this.ranking9 = "-------------"
+	this.ranking10 = "-------------"
 	
 }
 
@@ -79,21 +79,20 @@ Spacewar.menuState.prototype = {
 		this.panel.width = 420
 		this.panel.height = 220
 		
-		this.letras_ranking1 = game.add.text(560, 125,'1. ' + this.ranking1,{font: "17px Arial", fill: 'white'});
-		this.letras_ranking2 = game.add.text(560, 155,'2. ' + this.ranking2,{font: "17px Arial", fill: 'white'});
-		this.letras_ranking3 = game.add.text(560, 185,'3. ' + this.ranking3,{font: "17px Arial", fill: 'white'});
-		this.letras_ranking4 = game.add.text(560, 215,'4. ' + this.ranking4,{font: "17px Arial", fill: 'white'});
-		this.letras_ranking5 = game.add.text(560, 245,'5. ' + this.ranking5,{font: "17px Arial", fill: 'white'});
-		this.letras_ranking6 = game.add.text(750, 125,' 6. ' + this.ranking6,{font: "17px Arial", fill: 'white'});
-		this.letras_ranking7 = game.add.text(750, 155,' 7. ' + this.ranking7,{font: "17px Arial", fill: 'white'})
-		this.letras_ranking8 = game.add.text(750, 185,' 8. ' + this.ranking8,{font: "17px Arial", fill: 'white'})
-		this.letras_ranking9 = game.add.text(750, 215,' 9. ' + this.ranking9,{font: "17px Arial", fill: 'white'})
-		this.letras_ranking10 = game.add.text(750, 245,'10. ' + this.ranking10,{font: "17px Arial", fill: 'white'})
+		this.letras_ranking1 = game.add.text(530, 125,'1. ' + this.ranking1,{font: "17px Arial", fill: 'white'});
+		this.letras_ranking2 = game.add.text(530, 155,'2. ' + this.ranking2,{font: "17px Arial", fill: 'white'});
+		this.letras_ranking3 = game.add.text(530, 185,'3. ' + this.ranking3,{font: "17px Arial", fill: 'white'});
+		this.letras_ranking4 = game.add.text(530, 215,'4. ' + this.ranking4,{font: "17px Arial", fill: 'white'});
+		this.letras_ranking5 = game.add.text(530, 245,'5. ' + this.ranking5,{font: "17px Arial", fill: 'white'});
+		this.letras_ranking6 = game.add.text(725, 125,' 6. ' + this.ranking6,{font: "17px Arial", fill: 'white'});
+		this.letras_ranking7 = game.add.text(725, 155,' 7. ' + this.ranking7,{font: "17px Arial", fill: 'white'})
+		this.letras_ranking8 = game.add.text(725, 185,' 8. ' + this.ranking8,{font: "17px Arial", fill: 'white'})
+		this.letras_ranking9 = game.add.text(725, 215,' 9. ' + this.ranking9,{font: "17px Arial", fill: 'white'})
+		this.letras_ranking10 = game.add.text(725, 245,'10. ' + this.ranking10,{font: "17px Arial", fill: 'white'})
 		
 		this.enterKey =  game.input.keyboard.addKey(Phaser.Keyboard.ENTER);
 		game.input.keyboard.addKeyCapture([ Phaser.Keyboard.ENTER ]);
 		
-		this.letras_ranking1.setText('1. ' + game.global.playerRanking[7])
 	},
 	
 	actionOnClick1: function () 
@@ -119,9 +118,18 @@ Spacewar.menuState.prototype = {
 	actionOnClick3: function () 
 	{
 		if(game.global.myPlayer.name !== undefined){
-			document.getElementById('nameFolder').style.display = 'none';
-			document.getElementById('message').style.display = 'none';
-			document.getElementById('chat').style.display = 'none';
+			document.getElementById('nameFolder').style.transform = 'translate(50%,-960%)'
+			document.getElementById("nameFolder").disabled = false;
+			document.getElementById("nameFolder").placeholder = 'Nombre de sala';
+			document.getElementById("nameFolder").style.backgroundColor = "#aadef3";
+			$('#nameFolder').val("");
+			
+			document.getElementById('message').style.transform = 'translate(10%,-340%)'
+			document.getElementById('message').style.width = '430px'
+					
+			document.getElementById('chat').style.transform = 'translate(10%,-215%)'
+			document.getElementById('chat').rows = 12
+			document.getElementById('chat').cols = 54
 			this.game.state.start('lobby_battleRState');
 		}
 	},
@@ -181,6 +189,41 @@ Spacewar.menuState.prototype = {
 				textarea.scrollTop = textarea.scrollHeight;
 			}
 		}
+		
+		if(game.global.refreshRank == true){
+			if(game.global.playerRanking[0] != undefined){
+				this.letras_ranking1.setText('1. ' + game.global.playerRanking[0] + ' ' + game.global.pointRanking[0])
+			}
+			if(game.global.playerRanking[1] != undefined){
+				this.letras_ranking2.setText('2. ' + game.global.playerRanking[1] + ' ' + game.global.pointRanking[1])
+			}
+			if(game.global.playerRanking[2] != undefined){
+				this.letras_ranking3.setText('3. ' + game.global.playerRanking[2] + ' ' + game.global.pointRanking[2])
+			}
+			if(game.global.playerRanking[3] != undefined){
+				this.letras_ranking4.setText('4. ' + game.global.playerRanking[3] + ' ' + game.global.pointRanking[3])
+			}
+			if(game.global.playerRanking[4] != undefined){
+				this.letras_ranking5.setText('5. ' + game.global.playerRanking[4] + ' ' + game.global.pointRanking[4])
+			}
+			if(game.global.playerRanking[5] != undefined){
+				this.letras_ranking6.setText(' 6. ' + game.global.playerRanking[5] + ' ' + game.global.pointRanking[5])
+			}
+			if(game.global.playerRanking[6] != undefined){
+				this.letras_ranking7.setText(' 7. ' + game.global.playerRanking[6] + ' ' + game.global.pointRanking[6])
+			}
+			if(game.global.playerRanking[7] != undefined){
+				this.letras_ranking8.setText(' 8. ' + game.global.playerRanking[7] + ' ' + game.global.pointRanking[7])
+			}
+			if(game.global.playerRanking[8] != undefined){
+				this.letras_ranking9.setText(' 9. ' + game.global.playerRanking[8] + ' ' + game.global.pointRanking[8])
+			}
+			if(game.global.playerRanking[9] != undefined){
+				this.letras_ranking10.setText('10. ' + game.global.playerRanking[9] + ' ' + game.global.pointRanking[9])
+			}
+			
+		}
+		
 	}
 	
 }

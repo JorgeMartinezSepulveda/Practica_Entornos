@@ -1,4 +1,5 @@
-- Nombre Jugador: pedro | Puntuacion: 4500
-- Nombre Jugador: juan | Puntuacion: 3500
-- Nombre Jugador: lol | Puntuacion: 1500
-- Nombre Jugador: recatreinca | Puntuacion: 500
+   jor   150
+   oreka   1650
+   denak   5500
+   asd   0
+   qwew   0
