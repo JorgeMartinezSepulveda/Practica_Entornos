@@ -68,8 +68,8 @@ public class WebsocketGameHandler extends TextWebSocketHandler {
 			case "JOIN ROOM":
 				msg.put("event", "NEW ROOM");
 				msg.put("room", "GLOBAL");	
-				//arreglar, necesito el nombre de la sala desde javascript
-				if(game.getSalas().get("nombre de mi sala").addPlayer(player)) {
+
+				if(game.getSalas().get(node.get("roomName").asText()).addPlayer(player)) {
 					msg.put("respuesta", "jugador ha entrado");
 				}
 				else {

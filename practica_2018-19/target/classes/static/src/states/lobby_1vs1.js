@@ -1,65 +1,65 @@
 Spacewar.lobby_1vs1State = function(game) {
 	this.numStars = 100
 	this.nombre_sala = 'Ninguna'
-		this.letras_sala
-		this.letras_estado
-		this.nombreSala
-		this.estado_jugador = 'Esperando sala'
-			this.enSala = false
+	this.letras_sala
+	this.letras_estado
+	this.nombreSala
+	this.estado_jugador = 'Esperando sala'
+	this.enSala = false
 
-			this.numSalas = 0
+	this.numSalas = 0
 
-			this.button_crear
+	this.button_crear
 
-			this.panel_usuarios
+	this.panel_usuarios
 
-			this.cordX = 500
+	this.cordX = 500
 
-			this.button1
-			this.button2
-			this.button3
-			this.button4
-			this.button5
-			this.button6
-			this.button7
-			this.button8
-			this.button9
-			this.button10	
+	this.button1
+	this.button2
+	this.button3
+	this.button4
+	this.button5
+	this.button6
+	this.button7
+	this.button8
+	this.button9
+	this.button10	
 
-			this.nombreJugador
+	this.nombreJugador
 
-			this.texto_numJugadores1  = 0
-			this.texto_numJugadores2  = 0
-			this.texto_numJugadores3  = 0
-			this.texto_numJugadores4  = 0
-			this.texto_numJugadores5  = 0
-			this.texto_numJugadores6  = 0
-			this.texto_numJugadores7  = 0
-			this.texto_numJugadores8  = 0
-			this.texto_numJugadores9  = 0
-			this.texto_numJugadores10 = 0
+	this.texto_numJugadores1  = 0
+	this.texto_numJugadores2  = 0
+	this.texto_numJugadores3  = 0
+	this.texto_numJugadores4  = 0
+	this.texto_numJugadores5  = 0
+	this.texto_numJugadores6  = 0
+	this.texto_numJugadores7  = 0
+	this.texto_numJugadores8  = 0
+	this.texto_numJugadores9  = 0
+	this.texto_numJugadores10 = 0
 
-			this.letras_titulo1
-			this.letras_titulo2 
-			this.letras_titulo3  
-			this.letras_titulo4 
-			this.letras_titulo5 
-			this.letras_titulo6 
-			this.letras_titulo7  
-			this.letras_titulo8  
-			this.letras_titulo9  
-			this.letras_titulo10 
+	this.letras_titulo1
+	this.letras_titulo2 
+	this.letras_titulo3  
+	this.letras_titulo4 
+	this.letras_titulo5 
+	this.letras_titulo6 
+	this.letras_titulo7  
+	this.letras_titulo8  
+	this.letras_titulo9  
+	this.letras_titulo10 
 
-			this.texto_sala1  = 'Empty slot 1'
-				this.texto_sala2  = 'Empty slot 2'
-					this.texto_sala3  = 'Empty slot 3'
-						this.texto_sala4  = 'Empty slot 4'
-							this.texto_sala5  = 'Empty slot 5'
-								this.texto_sala6  = 'Empty slot 6'
-									this.texto_sala7  = 'Empty slot 7'
-										this.texto_sala8  = 'Empty slot 8'
-											this.texto_sala9  = 'Empty slot 9'
-												this.texto_sala10 = 'Empty slot 10'
+	this.texto_sala1  = 'Empty slot 1'
+	this.texto_sala2  = 'Empty slot 2'
+	this.texto_sala3  = 'Empty slot 3'
+	this.texto_sala4  = 'Empty slot 4'
+	this.texto_sala5  = 'Empty slot 5'
+	this.texto_sala6  = 'Empty slot 6'
+	this.texto_sala7  = 'Empty slot 7'
+	this.texto_sala8  = 'Empty slot 8'
+	this.texto_sala9  = 'Empty slot 9'
+	this.texto_sala10 = 'Empty slot 10'
 
 }
 
@@ -91,7 +91,7 @@ Spacewar.lobby_1vs1State.prototype = {
 			panel.width = 420
 			panel.height = 530
 
-			this.button1 = this.game.add.button(586 + this.cordX, 140, 'Panel_Sala', this.entrar_sala1, this,1,0);
+			this.button1 = this.game.add.button(586 + this.cordX, 140, 'Panel_Sala', this.actionOnClick(0), this,1,0);
 			this.button1.width = 359
 			this.button1.height = 30
 			this.button1.inputEnabled = true
@@ -175,8 +175,14 @@ Spacewar.lobby_1vs1State.prototype = {
 			// game.state.start('matchmakingState')
 		},
 
-		actionOnClick: function () 
+		actionOnClick: function (roomNumber) 
 		{
+			let message={
+					event : 'JOIN ROOM',
+					roomName : game.global.onevsoneRoom[roomNumber+(game.global.pagRooms*10)].nombre
+			}
+			game.global.socket.send(JSON.stringify(message));
+			
 			this.enSala = true
 			this.letras_sala.setText('Sala caracol')
 			this.estado_jugador = "En sala. Entrando al juego"
@@ -399,6 +405,7 @@ Spacewar.lobby_1vs1State.prototype = {
 				this.panel_usuarios.y = this.button2.y+40
 				this.nombreJugador.y = this.button2.y+100
 				this.nombreJugador.alpha = 1
+				this.nombreJugador.setText("1. " + game.global.onevsoneRoom[1].usuarios[0])
 			}
 			else if(this.button3.input.pointerOver())
 			{
@@ -406,6 +413,7 @@ Spacewar.lobby_1vs1State.prototype = {
 				this.panel_usuarios.y = this.button3.y+40
 				this.nombreJugador.y = this.button3.y+100
 				this.nombreJugador.alpha = 1
+				this.nombreJugador.setText("1. " + game.global.onevsoneRoom[2].usuarios[0])
 			}
 			else if(this.button4.input.pointerOver())
 			{
@@ -413,6 +421,7 @@ Spacewar.lobby_1vs1State.prototype = {
 				this.panel_usuarios.y = this.button4.y+40
 				this.nombreJugador.y = this.button4.y+100
 				this.nombreJugador.alpha = 1
+				this.nombreJugador.setText("1. " + game.global.onevsoneRoom[3].usuarios[0])
 			}
 			else if(this.button5.input.pointerOver())
 			{
@@ -420,6 +429,7 @@ Spacewar.lobby_1vs1State.prototype = {
 				this.panel_usuarios.y = this.button5.y+40
 				this.nombreJugador.y = this.button5.y+100
 				this.nombreJugador.alpha = 1
+				this.nombreJugador.setText("1. " + game.global.onevsoneRoom[4].usuarios[0])
 			}
 			else if(this.button6.input.pointerOver())
 			{
@@ -427,6 +437,7 @@ Spacewar.lobby_1vs1State.prototype = {
 				this.panel_usuarios.y = this.button6.y+40
 				this.nombreJugador.y = this.button6.y+100
 				this.nombreJugador.alpha = 1
+				this.nombreJugador.setText("1. " + game.global.onevsoneRoom[5].usuarios[0])
 			}
 			else if(this.button7.input.pointerOver())
 			{
@@ -434,6 +445,7 @@ Spacewar.lobby_1vs1State.prototype = {
 				this.panel_usuarios.y = this.button7.y+40
 				this.nombreJugador.y = this.button7.y+100
 				this.nombreJugador.alpha = 1
+				this.nombreJugador.setText("1. " + game.global.onevsoneRoom[6].usuarios[0])
 			}
 			else if(this.button8.input.pointerOver())
 			{
@@ -441,6 +453,7 @@ Spacewar.lobby_1vs1State.prototype = {
 				this.panel_usuarios.y = this.button3.y+40
 				this.nombreJugador.y = this.button3.y+100
 				this.nombreJugador.alpha = 1
+				this.nombreJugador.setText("1. " + game.global.onevsoneRoom[7].usuarios[0])
 			}
 			else if(this.button9.input.pointerOver())
 			{
@@ -448,6 +461,7 @@ Spacewar.lobby_1vs1State.prototype = {
 				this.panel_usuarios.y = this.button4.y+40
 				this.nombreJugador.y = this.button4.y+100
 				this.nombreJugador.alpha = 1
+				this.nombreJugador.setText("1. " + game.global.onevsoneRoom[8].usuarios[0])
 			}
 			else if(this.button10.input.pointerOver())
 			{
@@ -455,6 +469,7 @@ Spacewar.lobby_1vs1State.prototype = {
 				this.panel_usuarios.y = this.button5.y+40
 				this.nombreJugador.y = this.button5.y+100
 				this.nombreJugador.alpha = 1
+				this.nombreJugador.setText("1. " + game.global.onevsoneRoom[9].usuarios[0])
 			}
 			else
 			{

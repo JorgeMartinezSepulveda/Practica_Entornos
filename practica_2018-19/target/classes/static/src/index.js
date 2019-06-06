@@ -78,29 +78,35 @@ window.onload = function() {
                
                 for (var sala of msg.salas) 
                 {
-                	console.log("-    " + sala.nombre)
+                	var igual = false
+            		var i = 0
+
                 	if(sala.tipo == "2"){
-                		var igual = false
-                		var i = 0
                 		while((!igual)&&(i<game.global.onevsoneRoom.length))
                 		{
                 			igual = (game.global.onevsoneRoom[i].nombre == sala.nombre)
                 			i++
                 		}
-                		
-                		if(!igual){
+
+                		if(!igual)
+                		{
                 			game.global.onevsoneRoom[i] = sala
-                			//console.log(game.global.onevsoneRoom[i].usuarios[0])
-                    		//console.log(game.global.onevsoneRoom[1].nombre)
                 		}
-                		
                 	}
-                	else if(sala.tipo == "20"){
-                		game.global.battleRoom.push(sala)
-                		console.log(game.global.battleRoom[0].nombre)
-                	}
+                	else if(sala.tipo == "20")
+                	{
+                		while((!igual)&&(i<game.global.battleRoom.length))
+                		{
+                			igual = (game.global.battleRoom[i].nombre == sala.nombre)
+                			i++
+                		}
+
+                		if(!igual)
+                		{
+                			game.global.battleRoom[i] = sala
+                		}
+            		}
                 }
-            }
             break
 		case 'PLAYER MSG' :
 			var textarea = document.getElementById('chat');
