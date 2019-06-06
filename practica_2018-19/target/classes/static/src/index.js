@@ -107,6 +107,7 @@ window.onload = function() {
                 		}
             		}
                 }
+            }
             break
 		case 'PLAYER MSG' :
 			var textarea = document.getElementById('chat');
