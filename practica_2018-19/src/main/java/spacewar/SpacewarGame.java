@@ -95,7 +95,9 @@ public class SpacewarGame {
 	public void broadcast(String message) {
 		for (Player player : getPlayers()) {
 			try {
-				player.getSession().sendMessage(new TextMessage(message.toString()));
+				synchronized(player.getSession()){
+					player.getSession().sendMessage(new TextMessage(message.toString()));
+				}
 			} catch (Throwable ex) {
 				System.err.println("Execption sending message to player " + player.getSession().getId());
 				ex.printStackTrace(System.err);
@@ -214,5 +216,11 @@ public class SpacewarGame {
 		return salas;
 	}
 
+	public static ConcurrentHashMap<String, Room> removeSala(String nombreSala) {
+		
+		salas.remove(nombreSala);
+		
+		return salas;
+	}
 
 }

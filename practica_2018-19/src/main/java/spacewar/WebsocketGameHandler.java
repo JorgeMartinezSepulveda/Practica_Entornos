@@ -75,7 +75,9 @@ public class WebsocketGameHandler extends TextWebSocketHandler {
 				else {
 					msg.put("respuesta", "error al conectar");
 				}
-				player.getSession().sendMessage(new TextMessage(msg.toString()));
+				synchronized(player.getSession()) {
+					player.getSession().sendMessage(new TextMessage(msg.toString()));
+				}
 				break;
 			case "PLAYERS RECORD":
 				ArrayNode arrayNodePlayers = mapper.createArrayNode();
@@ -115,7 +117,9 @@ public class WebsocketGameHandler extends TextWebSocketHandler {
 				msg.put("event", "PLAYERS RECORD");
 				msg.putPOJO("players", arrayNodePlayers);
 				lock.unlock();
-				player.getSession().sendMessage(new TextMessage(msg.toString()));
+				synchronized(player.getSession()) {
+					player.getSession().sendMessage(new TextMessage(msg.toString()));
+				}
 				break;
 			case "PLAYER NAME":
 				String nombre = node.get("name").asText();
@@ -163,7 +167,8 @@ public class WebsocketGameHandler extends TextWebSocketHandler {
 						
 						ArrayNode arrayNodeJugd = mapper.createArrayNode();
 						
-						int numJugadores = game.getSalas().get(keySet[j]).getJugadores().size();
+						int numJugadores = Integer.parseInt(game.getSalas().get(keySet[j]).getNumeroJugadores());
+						System.out.println(numJugadores);
 						for (int i = 0; i < numJugadores; i++)
 						{
 							Player jgd = game.getPlayer(game.getSalas().get(keySet[j]).getJugadores().peek());
@@ -179,7 +184,9 @@ public class WebsocketGameHandler extends TextWebSocketHandler {
 					msg.putPOJO("salas", arrayNodeSalas);
 				}
 				msg.put("numSalas",game.getNumSalas());
-				player.getSession().sendMessage(new TextMessage(msg.toString()));				
+				synchronized(player.getSession()) {
+					player.getSession().sendMessage(new TextMessage(msg.toString()));	
+				}
 				break;
             case "NEW ROOM":
             	msg.put("event", "NEW ROOM");
@@ -192,8 +199,9 @@ public class WebsocketGameHandler extends TextWebSocketHandler {
             	else {
             		msg.put("respuesta","Sala ya existe");
             	}
-            	player.getSession().sendMessage(new TextMessage(msg.toString()));
-            	
+            	synchronized(player.getSession()) {
+            		player.getSession().sendMessage(new TextMessage(msg.toString()));
+            	}
             	break;
 				
 			default:
@@ -277,6 +285,25 @@ public class WebsocketGameHandler extends TextWebSocketHandler {
 	@Override
 	public void afterConnectionClosed(WebSocketSession session, CloseStatus status) throws Exception {
 		Player player = (Player) session.getAttributes().get(PLAYER_ATTRIBUTE);
+		
+		Object [] keySet=game.getSalas().keySet().toArray();
+		int j =0;
+		if (game.getNumSalas().equals("0")) {System.out.println("no salas");}
+		else {
+			while(j<keySet.length)
+			{
+				Player jgd = game.getPlayer(game.getSalas().get(keySet[j]).getJugadores().peek());
+				if(jgd.getName().equals(player.getName())) {
+					game.removeSala(game.getSalas().get(keySet[j]).getNombre());
+					break;
+				}
+				else {
+					j++;
+				}
+			}
+		}
+		
+		
 		game.removePlayer(player);
 
 		System.out.println(player.getName() + " se ha deconectado");
