@@ -14,9 +14,9 @@ public class Player extends Spaceship {
 	private final String shipType;
 	private String name;
 	public AtomicInteger vida=new AtomicInteger(100);
-	private AtomicInteger fuel=new AtomicInteger(100);
 	private AtomicInteger puntuacion=new AtomicInteger();
 	private Semaphore isHit=new Semaphore(1);
+	private String room;
 
 	public Player(int playerId, WebSocketSession session) {
 		this.playerId = playerId;
@@ -74,9 +74,31 @@ public class Player extends Spaceship {
 			isHit.release();
 		}
 	}
-	 public void setPuntuacion(String puntuaciones) {
+	public void setPuntuacion(String puntuaciones) {
 		 int i=Integer.parseInt(puntuaciones);
 		 this.puntuacion.getAndAdd(i);
 	 }
+
+
+	public int getPuntuacion() {
+		// TODO Auto-generated method stub
+		return this.puntuacion.get();
+	}
+
+
+	public int getVida() {
+		// TODO Auto-generated method stub
+		return this.vida.get();
+	}
+
+
+	public String getRoom() {
+		return room;
+	}
+
+
+	public void setRoom(String room) {
+		this.room = room;
+	}
 		
 }

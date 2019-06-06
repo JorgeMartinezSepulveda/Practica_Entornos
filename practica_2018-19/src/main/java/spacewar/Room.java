@@ -18,7 +18,6 @@ public class Room {
 
 	private Semaphore sem=new Semaphore(1);
 	
-	private Semaphore numToString=new Semaphore(1);
 	
 	public Room(String no,int tip) {
 			this.nombre=no;
@@ -64,6 +63,7 @@ public class Room {
 			if(!esLlena()) {
 				this.jugadores.add(j.getSession().getId());
 				this.numeroJugadores.getAndIncrement();
+				j.setRoom(this.getNombre());
 				sem.release();
 				return true;
 			}
@@ -79,6 +79,7 @@ public class Room {
 			if(!numeroJugadores.compareAndSet(0,0)) {
 				this.jugadores.remove(j.getSession().getId());
 				this.numeroJugadores.getAndDecrement();
+				j.setRoom("");
 				sem.release();
 				return true;
 			}

@@ -136,6 +136,8 @@ public class SpacewarGame {
 		ObjectNode json = mapper.createObjectNode();
 		ArrayNode arrayNodePlayers = mapper.createArrayNode();
 		ArrayNode arrayNodeProjectiles = mapper.createArrayNode();
+		ArrayNode arrayNodeHits=mapper.createArrayNode();
+
 
 		long thisInstant = System.currentTimeMillis();
 		Set<Integer> bullets2Remove = new HashSet<>();
@@ -152,6 +154,8 @@ public class SpacewarGame {
 				jsonPlayer.put("posX", player.getPosX());
 				jsonPlayer.put("posY", player.getPosY());
 				jsonPlayer.put("facingAngle", player.getFacingAngle());
+				jsonPlayer.put("fuel", player.getFuel());
+				jsonPlayer.put("room",player.getRoom());
 				arrayNodePlayers.addPOJO(jsonPlayer);
 			}
 
@@ -167,7 +171,12 @@ public class SpacewarGame {
 						//
 						player.hit(projectile.getOwner());
 						//
-						
+						ObjectNode jsonHits=mapper.createObjectNode();
+						jsonHits.put("id", player.getPlayerId());
+						jsonHits.put("vida", player.getVida());
+						jsonHits.put("hitBy", projectile.getOwner().getPlayerId());
+						jsonHits.put("point", projectile.getOwner().getPuntuacion());
+						arrayNodeHits.addPOJO(jsonHits);
 						
 						projectile.setHit(true);
 						break;
@@ -192,6 +201,8 @@ public class SpacewarGame {
 						jsonProjectile.put("posY", projectile.getPosY());
 					}
 				}
+				jsonProjectile.put("ownerRoom",projectile.getOwner().getRoom());
+				
 				arrayNodeProjectiles.addPOJO(jsonProjectile);
 			}
 
@@ -201,6 +212,7 @@ public class SpacewarGame {
 			json.put("event", "GAME STATE UPDATE");
 			json.putPOJO("players", arrayNodePlayers);
 			json.putPOJO("projectiles", arrayNodeProjectiles);
+			json.putPOJO("hits",arrayNodeHits);
 
 			this.broadcast(json.toString());
 		} catch (Throwable ex) {

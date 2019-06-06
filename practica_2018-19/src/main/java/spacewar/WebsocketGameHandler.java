@@ -2,15 +2,12 @@ package spacewar;
 
 import java.io.BufferedReader;
 import java.io.File;
-import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.FileReader;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Enumeration;
-import java.util.Set;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.locks.ReentrantLock;
 
@@ -87,7 +84,11 @@ public class WebsocketGameHandler extends TextWebSocketHandler {
 				int[] puntuacionesAux = new int[puntuaciones.length];
 				
 				for (int i = 0; i < puntuaciones.length; i++) {
+					try {
 					puntuacionesAux[i] = Integer.parseInt(puntuaciones[i]);
+					}catch(NumberFormatException e) {
+						
+					}
 				}
 				
 				int n = puntuacionesAux.length;

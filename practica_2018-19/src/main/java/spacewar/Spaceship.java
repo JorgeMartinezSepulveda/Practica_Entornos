@@ -1,5 +1,7 @@
 package spacewar;
 
+import java.util.concurrent.atomic.AtomicInteger;
+
 public class Spaceship extends SpaceObject {
 
 	private static final double SPACESHIP_SPEED = 0.6;
@@ -7,6 +9,8 @@ public class Spaceship extends SpaceObject {
 	private static final double SPACESHIP_ROTATION_SPEED = 3.00;
 	private static final int SPACESHIP_COLLISION_FACTOR = 400;
 	private static final double SPACE_FRICTION = 0.95;
+	private AtomicInteger fuel=new AtomicInteger(5000);
+
 
 	class LastMovement {
 		boolean thrust = false;
@@ -41,6 +45,7 @@ public class Spaceship extends SpaceObject {
 		this.multVelocity(SPACE_FRICTION);
 
 		if (this.lastMovement.thrust) {
+			this.fuel.getAndDecrement();
 			this.incVelocity(Math.cos(this.getFacingAngle() * Math.PI / 180) * SPACESHIP_SPEED,
 					Math.sin(this.getFacingAngle() * Math.PI / 180) * SPACESHIP_SPEED);
 		}
@@ -60,5 +65,9 @@ public class Spaceship extends SpaceObject {
 		this.applyVelocity2Position();
 
 		lastMovement = new LastMovement();
+	}
+	public int getFuel() {
+		// TODO Auto-generated method stub
+		return this.fuel.get();
 	}
 }
