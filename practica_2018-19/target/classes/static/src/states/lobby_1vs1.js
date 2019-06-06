@@ -91,7 +91,7 @@ Spacewar.lobby_1vs1State.prototype = {
 			panel.width = 420
 			panel.height = 530
 
-			this.button1 = this.game.add.button(586 + this.cordX, 140, 'Panel_Sala', this.actionOnClick, this,1,0);
+			this.button1 = this.game.add.button(586 + this.cordX, 140, 'Panel_Sala', function() {this.actionOnClick(0)}, this,1,0);
 			this.button1.width = 359
 			this.button1.height = 30
 			this.button1.inputEnabled = true
@@ -175,25 +175,27 @@ Spacewar.lobby_1vs1State.prototype = {
 			// game.state.start('matchmakingState')
 		},
 
-		actionOnClick: function () 
+		actionOnClick: function (roomNumber) 
 		{
-			console.log(" +    SI    +")
 			if(this.numSalas > 0){
-				
 				let message={
 						event : 'JOIN ROOM',
-						roomName : game.global.onevsoneRoom[this.roomNumber+(game.global.pagRooms*10)].nombre
+						roomName : game.global.onevsoneRoom[roomNumber+(game.global.pagRooms*10)].nombre
 				}
 				game.global.socket.send(JSON.stringify(message));
 				
 				this.enSala = true
-				this.letras_sala.setText(game.global.onevsoneRoom[this.roomNumber+(game.global.pagRooms*10)].nombre)
+				this.letras_sala.setText(game.global.onevsoneRoom[roomNumber+(game.global.pagRooms*10)].nombre)
 				this.estado_jugador = "En sala. Entrando al juego"
 					this.letras_estado.setText(this.estado_jugador)
 					this.letras_estado.x = 230
 
 				this.button_crear.alpha = 0.5
-
+				
+				game.global.myPlayer.room = game.global.onevsoneRoom[roomNumber+(game.global.pagRooms*10)].nombre
+				
+				game.global.beginGame = true
+				
 				document.getElementById("nameFolder").disabled = true;
 				document.getElementById("nameFolder").style.backgroundColor = "grey";
 			}
@@ -221,11 +223,11 @@ Spacewar.lobby_1vs1State.prototype = {
 					this.letras_estado.setText(this.estado_jugador)
 					this.letras_estado.x = 220
 
-					this.letras_sala.setText(this.nombreSala)
+				this.letras_sala.setText(this.nombreSala)
 
-					this.enSala = true
+				this.enSala = true
 
-					document.getElementById("nameFolder").disabled = true;
+				document.getElementById("nameFolder").disabled = true;
 				document.getElementById("nameFolder").style.backgroundColor = "grey";
 			}
 		},
@@ -250,6 +252,12 @@ Spacewar.lobby_1vs1State.prototype = {
 					$('#chat').val($('#chat').val() + "\n" + "[" +  today.getHours() + ":" + today.getMinutes() + "] " + game.global.myPlayer.name + ": " + messageP);
 					textarea.scrollTop = textarea.scrollHeight;
 				}	
+			}
+			
+			if(game.global.beginGame == true)
+			{
+				game.global.beginGame = false
+				this.game.time.events.add(Phaser.Timer.SECOND*2, function(){this.game.state.start('gameState');}, this);
 			}
 
 			if(game.global.refreshRooms == true)

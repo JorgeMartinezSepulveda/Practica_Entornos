@@ -18,7 +18,8 @@ window.onload = function() {
 		nameP : undefined,
 		refreshRank : false,
 		refreshRooms : false,
-		numRooms: 0
+		numRooms: 0,
+		beginGame : false
 	}
 
 	// WEBSOCKET CONFIGURATOR
@@ -51,19 +52,25 @@ window.onload = function() {
 				console.log('[DEBUG] ID assigned to player: ' + game.global.myPlayer.id)
 			}
 			break
+		case 'JOIN ROOM':
+			if (msg.respuesta=="jugador ha entrado"){
+                console.log(msg.roomName);
+            }
+            else{
+                console.log("error")
+            }
+			break
 		case 'NEW ROOM' :
             if (game.global.DEBUG_MODE) {
                 console.log('[DEBUG] NEW ROOM message recieved')
                 console.dir(msg)
             }
             if (msg.respuesta=="Sala creada"){
-                console.log("SUCCESS");
+                game.global.myPlayer.room = msg.room
+                console.log("Creaste la sala: " + game.global.myPlayer.room)
             }
             else{
                 console.log("error")
-            }
-            game.global.myPlayer.room = {
-                    name : msg.room
             }
             break
 		case 'ROOMS':
@@ -106,6 +113,19 @@ window.onload = function() {
                 			game.global.battleRoom[i] = sala
                 		}
             		}
+                }
+                
+                for(var sala of msg.salas)
+                {
+                	console.log("/IndexDebug/ Nombre sala jugador: " + game.global.myPlayer.room)
+                	console.log("/IndexDebug/ Nombre sala comprobada: " + sala.nombre)
+                	if(sala.nombre == game.global.myPlayer.room)
+                	{
+                		if(sala.jugadores == "2")
+                		{
+                			game.global.beginGame = true
+                		}
+                	}
                 }
             }
             break
