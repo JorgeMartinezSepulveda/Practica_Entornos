@@ -91,7 +91,7 @@ Spacewar.lobby_1vs1State.prototype = {
 			panel.width = 420
 			panel.height = 530
 
-			this.button1 = this.game.add.button(586 + this.cordX, 140, 'Panel_Sala', this.actionOnClick(0), this,1,0);
+			this.button1 = this.game.add.button(586 + this.cordX, 140, 'Panel_Sala', this.actionOnClick, this,1,0);
 			this.button1.width = 359
 			this.button1.height = 30
 			this.button1.inputEnabled = true
@@ -175,24 +175,29 @@ Spacewar.lobby_1vs1State.prototype = {
 			// game.state.start('matchmakingState')
 		},
 
-		actionOnClick: function (roomNumber) 
+		actionOnClick: function () 
 		{
-			let message={
-					event : 'JOIN ROOM',
-					roomName : game.global.onevsoneRoom[roomNumber+(game.global.pagRooms*10)].nombre
-			}
-			game.global.socket.send(JSON.stringify(message));
-			
-			this.enSala = true
-			this.letras_sala.setText('Sala caracol')
-			this.estado_jugador = "En sala. Entrando al juego"
-				this.letras_estado.setText(this.estado_jugador)
-				this.letras_estado.x = 230
+			console.log(" +    SI    +")
+			if(this.numSalas > 0){
+				
+				let message={
+						event : 'JOIN ROOM',
+						roomName : game.global.onevsoneRoom[this.roomNumber+(game.global.pagRooms*10)].nombre
+				}
+				game.global.socket.send(JSON.stringify(message));
+				
+				this.enSala = true
+				this.letras_sala.setText(game.global.onevsoneRoom[this.roomNumber+(game.global.pagRooms*10)].nombre)
+				this.estado_jugador = "En sala. Entrando al juego"
+					this.letras_estado.setText(this.estado_jugador)
+					this.letras_estado.x = 230
 
 				this.button_crear.alpha = 0.5
 
 				document.getElementById("nameFolder").disabled = true;
-			document.getElementById("nameFolder").style.backgroundColor = "grey";
+				document.getElementById("nameFolder").style.backgroundColor = "grey";
+			}
+			
 		},
 
 		crearSala: function () 
