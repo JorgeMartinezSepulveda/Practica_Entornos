@@ -23,7 +23,7 @@ window.onload = function() {
 	}
 
 	// WEBSOCKET CONFIGURATOR
-	game.global.socket = new WebSocket("ws://192.168.0.18:8090/spacewar")
+	game.global.socket = new WebSocket("ws://192.168.1.52:8090/spacewar")
 
 	game.global.socket.onopen = () => {
 		if (game.global.DEBUG_MODE) {
@@ -48,12 +48,14 @@ window.onload = function() {
 			}
 			game.global.myPlayer.id = msg.id
 			game.global.myPlayer.shipType = msg.shipType
+			game.global.myPlayer.room=undefined;
 			if (game.global.DEBUG_MODE) {
 				console.log('[DEBUG] ID assigned to player: ' + game.global.myPlayer.id)
 			}
 			break
 		case 'JOIN ROOM':
 			if (msg.respuesta=="jugador ha entrado"){
+				game.global.myPlayer.room=msg.roomName
 				console.log(msg.roomName);
 			}
 			else{
@@ -70,7 +72,7 @@ window.onload = function() {
 				console.log("Creaste la sala: " + game.global.myPlayer.room)
 			}
 			else{
-				console.log("error")
+				console.log("ay el error")
 			}
 			break
 		case 'ROOMS':
@@ -153,15 +155,13 @@ window.onload = function() {
 			}
 			if (typeof game.global.myPlayer.image !== 'undefined') {
 				for (var player of msg.players) {
-					console.log("myRom"+game.global.myPlayer.room)
-					console.log("expected rom"+player.room)
-					
 					if((game.global.myPlayer.room==player.room)&&(player.room!="")){
-						if (game.global.myPlayer.id == player.id) {
+						if (game.global.myPlayer.id == player.id) {		
 							game.global.myPlayer.image.x = player.posX
 							game.global.myPlayer.image.y = player.posY
 							game.global.myPlayer.image.angle = player.facingAngle
 							game.global.myPlayer.fuel=player.fuel
+							game.global.myPlayer.vida=player.vida
 						} else {
 							if (typeof game.global.otherPlayers[player.id] == 'undefined') {
 								game.global.otherPlayers[player.id] = {
@@ -172,6 +172,8 @@ window.onload = function() {
 								game.global.otherPlayers[player.id].image.x = player.posX
 								game.global.otherPlayers[player.id].image.y = player.posY
 								game.global.otherPlayers[player.id].image.angle = player.facingAngle
+								game.global.otherPlayers[player.id].vida=player.vida;
+								game.global.otherPlayers[player.id].room=player.room;
 							}
 						}
 					}
@@ -218,7 +220,7 @@ window.onload = function() {
 						game.global.myPlayer.vida=hit.vida;
 					}
 					else if(game.global.otherPlayers[hit.id]!==undefined){
-						game.global.otherPlayer.vida=hit.vida;
+						game.global.otherPlayers[hit.id].vida=hit.vida;
 					}
 					if(game.global.myPlayer.id==hit.hitBy){
 						game.global.myPlayer.puntuacion=hit.point;
