@@ -9,6 +9,7 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicInteger;
+import java.util.concurrent.locks.ReentrantLock;
 
 import org.springframework.web.socket.TextMessage;
 
@@ -156,6 +157,7 @@ public class SpacewarGame {
 				jsonPlayer.put("facingAngle", player.getFacingAngle());
 				jsonPlayer.put("fuel", player.getFuel());
 				jsonPlayer.put("room",player.getRoom());
+				jsonPlayer.put("vida", player.getVida());
 				arrayNodePlayers.addPOJO(jsonPlayer);
 			}
 
