@@ -41,11 +41,16 @@ Spacewar.gameState.prototype = {
 			game.global.myPlayer.image = game.add.sprite(0, 0, 'spacewar',
 					game.global.myPlayer.shipType)
 					game.global.myPlayer.image.anchor.setTo(0.5, 0.5)
+					game.global.myPlayer.vida=100;
+			game.global.myPlayer.fuel=5000;
+			for(var i=0;i<game.global.otherPlayers.length;i++){
+				game.global.otherPlayers[i].vida=100;
+				console.log("aaaaaaaa "+game.global.otherPlayers[i].vida)
+			}
 		},
 
 		create : function() {
-			game.global.myPlayer.vida=100;
-			game.global.myPlayer.fuel=5000;
+
 			document.getElementById("nameFolder").style.display = "none";
 			document.getElementById("message").style.display="none";
 			document.getElementById("chat").style.display="none";
@@ -75,6 +80,31 @@ Spacewar.gameState.prototype = {
 		},
 
 		update : function() {
+
+			if(game.global.myPlayer.vida==0){
+				let explosion = game.add.sprite(game.global.myPlayer.image.x, game.global.myPlayer.image.y, 'explosion')
+				explosion.animations.add('explosion')
+				explosion.anchor.setTo(0.5, 0.5)
+				explosion.scale.setTo(2, 2)
+				explosion.animations.play('explosion', 15, false, true)
+	game.global.myPlayer.image.visible=false;
+				console.log("killed")
+			}
+
+			for(var i=1;i<game.global.otherPlayers.length;i++){
+				if((game.global.otherPlayers[i].vida==0)&&(game.global.otherPlayers[i].room==game.global.myPlayer.room)){
+					game.global.otherPlayers[i].vida=-1;
+					let explosion = game.add.sprite(game.global.otherPlayers[i].image.x, game.global.otherPlayers[i].image.y, 'explosion')
+								explosion.animations.add('explosion')
+								explosion.anchor.setTo(0.5, 0.5)
+								explosion.scale.setTo(2, 2)
+								explosion.animations.play('explosion', 15, false, true)
+					game.global.otherPlayers[i].image.visible=false;
+					
+				}
+			}
+
+
 			let msg = new Object()
 			msg.event = 'UPDATE MOVEMENT'
 
@@ -87,9 +117,7 @@ Spacewar.gameState.prototype = {
 
 			msg.bullet = false
 
-			console.log("fuelk "+game.global.myPlayer.fuel);
-			console.log("vida "+game.global.myPlayer.vida);
-			
+
 			if((game.global.myPlayer.fuel>0)&&(game.global.myPlayer.vida>0)){
 				if (this.wKey.isDown)
 					msg.movement.thrust = true;

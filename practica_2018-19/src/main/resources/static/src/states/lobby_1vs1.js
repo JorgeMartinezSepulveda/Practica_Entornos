@@ -185,21 +185,7 @@ Spacewar.lobby_1vs1State.prototype = {
 							roomName : game.global.onevsoneRoom[roomNumber+(game.global.pagRooms*10)].nombre
 					}
 					game.global.socket.send(JSON.stringify(message));
-
-					this.enSala = true
-					this.letras_sala.setText(game.global.onevsoneRoom[roomNumber+(game.global.pagRooms*10)].nombre)
-					this.estado_jugador = "En sala. Entrando al juego"
-						this.letras_estado.setText(this.estado_jugador)
-						this.letras_estado.x = 230
-
-						this.button_crear.alpha = 0.5
-
-						game.global.myPlayer.room = game.global.onevsoneRoom[roomNumber+(game.global.pagRooms*10)].nombre
-
-						game.global.beginGame = true
-
-						document.getElementById("nameFolder").disabled = true;
-					document.getElementById("nameFolder").style.backgroundColor = "grey";
+				
 				}
 			}
 
@@ -212,32 +198,38 @@ Spacewar.lobby_1vs1State.prototype = {
 
 			if((this.nombreSala !== '')&&(this.enSala == false))
 			{
-				game.global.myPlayer.room = this.nombreSala
 				let message = {
 						event : 'NEW ROOM',
-						name : game.global.myPlayer.room,
+						name : this.nombreSala,
 						tipo:'0'
 				}
 				game.global.socket.send(JSON.stringify(message))
 
-				console.log(game.global.myPlayer.room)
-
-				this.estado_jugador = "En sala. Esperando jugadores"
-					this.letras_estado.setText(this.estado_jugador)
-					this.letras_estado.x = 220
-
-					this.letras_sala.setText(this.nombreSala)
-
-					this.enSala = true
-
-					document.getElementById("nameFolder").disabled = true;
-				document.getElementById("nameFolder").style.backgroundColor = "grey";
-				this.enSala==true;
+				
 			}
 		},
 
 
 		update : function() {
+			
+			if(game.global.myPlayer.room!=undefined){
+				this.enSala = true
+				this.letras_sala.setText(game.global.myPlayer.room)
+				this.estado_jugador = "En sala. Entrando al juego"
+					this.letras_estado.setText(this.estado_jugador)
+					this.letras_estado.x = 230
+
+					this.button_crear.alpha = 0.5
+					this.letras_sala.setText(game.global.myPlayer.room)
+
+					game.global.beginGame = true
+
+					document.getElementById("nameFolder").disabled = true;
+				document.getElementById("nameFolder").style.backgroundColor = "grey";
+			}
+			else{
+				console.log("error")
+			}
 			if (this.enterKey.justDown) {
 				var input2 = $('#message');
 				messageP = input2.val();
