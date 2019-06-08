@@ -41,6 +41,9 @@ public class Room {
 	public int getMaximoJugadores() {
 		return maximoJugadores;
 	}
+	public ArrayBlockingQueue<String> getJugadores(){
+		return this.jugadores;
+	}
 
 	public void setMaximoJugadores(int maximoJugadores) {
 		this.maximoJugadores = maximoJugadores;
@@ -48,10 +51,6 @@ public class Room {
 
 	public boolean esLlena() {
 		return this.numeroJugadores.compareAndSet(this.maximoJugadores, this.maximoJugadores);
-	}
-
-	public ArrayBlockingQueue<String> getJugadores() {
-		return jugadores;
 	}
 
 	public String getNombre() {

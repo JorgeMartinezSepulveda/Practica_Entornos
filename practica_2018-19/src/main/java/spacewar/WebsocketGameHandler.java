@@ -8,6 +8,7 @@ import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.concurrent.ArrayBlockingQueue;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.locks.ReentrantLock;
 
@@ -31,20 +32,20 @@ public class WebsocketGameHandler extends TextWebSocketHandler {
 	private AtomicInteger playerId = new AtomicInteger(0);
 	private AtomicInteger projectileId = new AtomicInteger(0);
 	private ReentrantLock lock=new ReentrantLock();
-	
+
 	private ObjectMapper json = new ObjectMapper().setVisibility(PropertyAccessor.FIELD, Visibility.ANY);
 
 	@Override
 	public void afterConnectionEstablished(WebSocketSession session) throws Exception {
 		Player player = new Player(playerId.incrementAndGet(), session);
 		session.getAttributes().put(PLAYER_ATTRIBUTE, player);
-		
+
 		ObjectNode msg = mapper.createObjectNode();
 		msg.put("event", "JOIN");
 		msg.put("id", player.getPlayerId());
 		msg.put("shipType", player.getShipType());
 		player.getSession().sendMessage(new TextMessage(msg.toString()));
-		
+
 		game.addPlayer(player);
 	}
 
@@ -64,7 +65,7 @@ public class WebsocketGameHandler extends TextWebSocketHandler {
 				break;
 			case "JOIN ROOM":
 				msg.put("event", "JOIN ROOM");
-
+				lock.lock();
 				if(game.getSalas().get(node.get("roomName").asText()).addPlayer(player)) {
 					msg.put("respuesta", "jugador ha entrado");
 					msg.put("roomName", game.getSalas().get(node.get("roomName").asText()).getNombre());
@@ -72,8 +73,32 @@ public class WebsocketGameHandler extends TextWebSocketHandler {
 				else {
 					msg.put("respuesta", "error al conectar");
 				}
+				lock.unlock();
 				synchronized(player.getSession()) {
 					player.getSession().sendMessage(new TextMessage(msg.toString()));
+				}
+				break;
+			case "CHECK ROOM":
+				lock.lock();
+				if(game.getSalas().get(node.get("room").asText()).esLlena()) {
+					msg.put("event","BEGIN MATCH");
+					ArrayNode arrayNodePlayers= mapper.createArrayNode();
+					int numJugadores = Integer.parseInt(game.getSalas().get(node.get("room").asText()).getNumeroJugadores());
+					System.out.println("numJogs"+numJugadores);
+					String []aux=game.getSalas().get(node.get("room").asText()).getJugadores().toArray(new String[game.getSalas().get(node.get("room").asText()).getJugadores().size()]);
+					for (int i = 0; i < numJugadores; i++) {
+						Player p=game.getPlayer(aux[i]);
+						ObjectNode jsonPlayer = mapper.createObjectNode();
+						jsonPlayer.put("id", player.getPlayerId());
+						jsonPlayer.put("fuel", 5000);
+						jsonPlayer.put("room",player.getRoom());
+						jsonPlayer.put("vida", 100);
+						arrayNodePlayers.addPOJO(jsonPlayer);
+					}
+					msg.putPOJO("players", arrayNodePlayers);
+					lock.unlock();
+					game.broadcast(msg.toString());
+					
 				}
 				break;
 			case "PLAYERS RECORD":
@@ -82,24 +107,24 @@ public class WebsocketGameHandler extends TextWebSocketHandler {
 				String[] nombres = getRecordNames().toArray(new String[getRecordNames().size()]);
 				String[] puntuaciones =   getRecordPoints().toArray(new String[getRecordPoints().size()]);
 				int[] puntuacionesAux = new int[puntuaciones.length];
-				
+
 				for (int i = 0; i < puntuaciones.length; i++) {
 					try {
-					puntuacionesAux[i] = Integer.parseInt(puntuaciones[i]);
+						puntuacionesAux[i] = Integer.parseInt(puntuaciones[i]);
 					}catch(NumberFormatException e) {
-						
+
 					}
 				}
-				
+
 				int n = puntuacionesAux.length;
 				for (int i = 0; i <= n - 2; i++) {
 					for (int j = n - 1; j > i; j--) {
-					 	if (puntuacionesAux[j - 1] < puntuacionesAux[j]) {
-						 	permuta(puntuacionesAux,puntuaciones,nombres, j - 1, j);
-					 	}
-				 	}
+						if (puntuacionesAux[j - 1] < puntuacionesAux[j]) {
+							permuta(puntuacionesAux,puntuaciones,nombres, j - 1, j);
+						}
+					}
 				}
-				
+
 				for (int j = 0; j < nombres.length; j++) {
 					if(player.getName() != null) 
 					{
@@ -108,13 +133,13 @@ public class WebsocketGameHandler extends TextWebSocketHandler {
 							player.setPuntuacion(puntuaciones[j]);
 						}
 					}
-					
+
 					ObjectNode jsonPlayer = mapper.createObjectNode();
 					jsonPlayer.put("name", nombres[j]);
 					jsonPlayer.put("record", puntuaciones[j]);
 					arrayNodePlayers.addPOJO(jsonPlayer);
 				}	
-				
+
 				msg.put("event", "PLAYERS RECORD");
 				msg.putPOJO("players", arrayNodePlayers);
 				lock.unlock();
@@ -125,21 +150,21 @@ public class WebsocketGameHandler extends TextWebSocketHandler {
 			case "PLAYER NAME":
 				String nombre = node.get("name").asText();
 				player.setName(nombre);
-				
+
 				//Comprobamos que el jugador se a actualizado y ha añadido su nombre
 				game.setPlayerName(player);
 				register(player);
 				System.out.println(game.getPlayer(player.getSession().getId()).getName());
-				
+
 				break;
 			case "PLAYER MSG":
-				
+
 				String PLayer_msg = node.get("msg").asText();
 				msg.put("event", "PLAYER MSG");
 				msg.put("name", player.getName());
 				msg.put("msg", PLayer_msg);
 				sendOtherParticipants(player.getSession(), msg);
-				
+
 				break;
 			case "UPDATE MOVEMENT":
 				player.loadMovement(node.path("movement").get("thrust").asBoolean(),
@@ -151,60 +176,64 @@ public class WebsocketGameHandler extends TextWebSocketHandler {
 					game.addProjectile(projectile.getId(), projectile);
 				}
 				break;
-            case "ROOMS":
+			case "ROOMS":
 				msg.put("event", "ROOMS");
+				lock.lock();
 				ArrayNode arrayNodeSalas= mapper.createArrayNode();
 				//no concurrente
-				Object [] keySet=game.getSalas().keySet().toArray();
+				String [] keySet=game.getSalas().keySet().toArray(new String[game.getSalas().keySet().size()]);
 				int j =0;
-				if (game.getNumSalas().equals("0")) {System.out.println("no salas");}
+				if (game.getNumSalas()==0) {System.out.println("no salas");}
 				else {
-					while(j<keySet.length)
+					System.out.println("while ");
+					while(j<game.getNumSalas())
 					{
 						ObjectNode jsonSala = mapper.createObjectNode();
 						jsonSala.put("nombre",game.getSalas().get(keySet[j]).getNombre());
 						jsonSala.put("jugadores",game.getSalas().get(keySet[j]).getNumeroJugadores());
 						jsonSala.put("tipo",game.getSalas().get(keySet[j]).getMaximoJugadores());
-						
+
 						ArrayNode arrayNodeJugd = mapper.createArrayNode();
-						
+
 						int numJugadores = Integer.parseInt(game.getSalas().get(keySet[j]).getNumeroJugadores());
-						System.out.println(numJugadores);
+						System.out.println("numJogs"+numJugadores);
+						String []aux=game.getSalas().get(keySet[j]).getJugadores().toArray(new String[game.getSalas().get(keySet[j]).getJugadores().size()]);
 						for (int i = 0; i < numJugadores; i++)
 						{
-							Player jgd = game.getPlayer(game.getSalas().get(keySet[j]).getJugadores().peek());
+							System.out.println("mf "+aux[i]);
+							Player jgd = game.getPlayer(aux[i]);
 							arrayNodeJugd.add(jgd.getName());
 						}
-						
+
 						jsonSala.putPOJO("usuarios",arrayNodeJugd);
-						
+
 						arrayNodeSalas.addPOJO(jsonSala);
-						System.out.println("el nombre "+game.getSalas().get(keySet[j]).getNombre());
 						j++;
 					}
 					msg.putPOJO("salas", arrayNodeSalas);
 				}
 				msg.put("numSalas",game.getNumSalas());
+				lock.unlock();
 				synchronized(player.getSession()) {
 					player.getSession().sendMessage(new TextMessage(msg.toString()));	
 				}
 				break;
-            case "NEW ROOM":
-            	msg.put("event", "NEW ROOM");
-            	System.out.println("recibido mensaje, sala: "+node.get("name").asText());
-            	if(game.createRoom(node.get("name").asText(), node.get("tipo").asInt())) {
-            		game.getSalas().get(node.get("name").asText()).addPlayer(player);
-            		msg.put("respuesta","Sala creada");
-            		msg.put("room", node.get("name").asText());
-            	}
-            	else {
-            		msg.put("respuesta","Sala ya existe");
-            	}
-            	synchronized(player.getSession()) {
-            		player.getSession().sendMessage(new TextMessage(msg.toString()));
-            	}
-            	break;
-				
+			case "NEW ROOM":
+				msg.put("event", "NEW ROOM");
+				System.out.println("recibido mensaje, sala: "+node.get("name").asText());
+				if(game.createRoom(node.get("name").asText(), node.get("tipo").asInt())) {
+					game.getSalas().get(node.get("name").asText()).addPlayer(player);
+					msg.put("respuesta","Sala creada");
+					msg.put("room", node.get("name").asText());
+				}
+				else {
+					msg.put("respuesta","Sala ya existe");
+				}
+				synchronized(player.getSession()) {
+					player.getSession().sendMessage(new TextMessage(msg.toString()));
+				}
+				break;
+
 			default:
 				break;
 			}
@@ -214,45 +243,45 @@ public class WebsocketGameHandler extends TextWebSocketHandler {
 			e.printStackTrace(System.err);
 		}
 	}
-	
+
 	private static void permuta(int[] a,String[] b,String[] c, int i, int j) {
-	    int t;
-	    String f,l;
-	    t = a[i];
-	    f = b[i];
-	    l = c[i];
-	    a[i] = a[j];
-	    b[i] = b[j];
-	    c[i] = c[j];
-	    a[j] = t;
-	    b[j] = f;
-	    c[j] = l;
+		int t;
+		String f,l;
+		t = a[i];
+		f = b[i];
+		l = c[i];
+		a[i] = a[j];
+		b[i] = b[j];
+		c[i] = c[j];
+		a[j] = t;
+		b[j] = f;
+		c[j] = l;
 	}
-	
+
 	private void sendOtherParticipants(WebSocketSession session, ObjectNode msg) throws IOException {
 		Collection <Player> players = game.getPlayers();
-	
+
 		for (Player participant : players) {
 			if (!participant.getSession().getId().equals(session.getId())) {
 				participant.getSession().sendMessage(new TextMessage(msg.toString()));
 			}
 		}
 	}
-	
+
 	private void register (Player player) throws IOException {
-		
+
 		PrintWriter pw = new PrintWriter (new FileOutputStream(new File("target/classes/data.txt"),true));
-		
+
 		pw.append("   " + player.getName());
 		pw.print("   0");
-		
+
 		pw.println();
-		
+
 		pw.close();
 	}
-	
+
 	public ArrayList<String> getRecordNames() throws IOException{
-		
+
 		BufferedReader historial = new BufferedReader(new FileReader (new File("target/classes/data.txt")));
 		String line;
 		ArrayList<String> nombre = new ArrayList <String>();
@@ -262,36 +291,36 @@ public class WebsocketGameHandler extends TextWebSocketHandler {
 			String [] splited = line.split(" ");
 			nombre.add(splited[3]);
 		}
-		
+
 		historial.close();
 		return nombre;
 	}
-	
+
 	public ArrayList<String> getRecordPoints() throws IOException{
-		
+
 		BufferedReader historial = new BufferedReader(new FileReader (new File("target/classes/data.txt")));
 		String line;
 		ArrayList<String> puntuacion = new ArrayList <String>();
 
 		while((line = historial.readLine()) != null)
 		{
-				String [] splited = line.split(" ");
-				puntuacion.add(splited[6]);
+			String [] splited = line.split(" ");
+			puntuacion.add(splited[6]);
 		}
-		
+
 		historial.close();
 		return puntuacion;
 	}
-	
+
 	@Override
 	public void afterConnectionClosed(WebSocketSession session, CloseStatus status) throws Exception {
 		Player player = (Player) session.getAttributes().get(PLAYER_ATTRIBUTE);
-		
-		Object [] keySet=game.getSalas().keySet().toArray();
+
+		String [] keySet=game.getSalas().keySet().toArray(new String[game.getSalas().keySet().size()]);
 		int j =0;
-		if (game.getNumSalas().equals("0")) {System.out.println("no salas");}
+		if (game.getNumSalas()==0) {System.out.println("no salas");}
 		else {
-			while(j<keySet.length)
+			while(j<game.getNumSalas())
 			{
 				Player jgd = game.getPlayer(game.getSalas().get(keySet[j]).getJugadores().peek());
 				if(jgd.getName().equals(player.getName())) {
@@ -303,12 +332,12 @@ public class WebsocketGameHandler extends TextWebSocketHandler {
 				}
 			}
 		}
-		
-		
+
+
 		game.removePlayer(player);
 
 		System.out.println(player.getName() + " se ha deconectado");
-		
+
 		ObjectNode msg = mapper.createObjectNode();
 		msg.put("event", "REMOVE PLAYER");
 		msg.put("id", player.getPlayerId());

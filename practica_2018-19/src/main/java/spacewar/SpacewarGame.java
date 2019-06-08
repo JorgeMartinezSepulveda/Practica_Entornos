@@ -107,8 +107,8 @@ public class SpacewarGame {
 		}
 	}
     
-    public String getNumSalas() {
-		return numSalas.toString();
+    public int getNumSalas() {
+		return numSalas.get();
 	}
 
     public boolean createRoom(String nombre,int tipo) {
