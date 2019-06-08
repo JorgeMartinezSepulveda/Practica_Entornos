@@ -222,7 +222,6 @@ Spacewar.lobby_1vs1State.prototype = {
 					this.button_crear.alpha = 0.5
 					this.letras_sala.setText(game.global.myPlayer.room)
 
-					game.global.beginGame = true
 
 					document.getElementById("nameFolder").disabled = true;
 				document.getElementById("nameFolder").style.backgroundColor = "grey";
@@ -250,9 +249,9 @@ Spacewar.lobby_1vs1State.prototype = {
 				}	
 			}
 
-			if(game.global.beginGame == true)
+			if(game.global.myPlayer.inMatch == true)
 			{
-				game.global.beginGame = false
+				game.global.myPlayer.inMatch = false
 				this.game.time.events.add(Phaser.Timer.SECOND*2, function(){this.game.state.start('gameState');}, this);
 			}
 

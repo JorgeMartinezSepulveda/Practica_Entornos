@@ -2,7 +2,7 @@ Spacewar.gameState = function(game) {
 	this.bulletTime
 	this.fireBullet
 	this.numStars = 100 // Should be canvas size dependant
-	this.maxProjectiles = 10 // 8 per player
+	this.maxProjectiles = 100 // 8 per player
 }
 
 Spacewar.gameState.prototype = {
@@ -41,12 +41,6 @@ Spacewar.gameState.prototype = {
 			game.global.myPlayer.image = game.add.sprite(0, 0, 'spacewar',
 					game.global.myPlayer.shipType)
 					game.global.myPlayer.image.anchor.setTo(0.5, 0.5)
-					game.global.myPlayer.vida=100;
-			game.global.myPlayer.fuel=5000;
-			for(var i=0;i<game.global.otherPlayers.length;i++){
-				game.global.otherPlayers[i].vida=100;
-				console.log("aaaaaaaa "+game.global.otherPlayers[i].vida)
-			}
 		},
 
 		create : function() {
@@ -91,16 +85,17 @@ Spacewar.gameState.prototype = {
 				console.log("killed")
 			}
 
-			for(var i=1;i<game.global.otherPlayers.length;i++){
-				if((game.global.otherPlayers[i].vida==0)&&(game.global.otherPlayers[i].room==game.global.myPlayer.room)){
-					game.global.otherPlayers[i].vida=-1;
+			for(var i=0;i<game.global.otherPlayers.length;i++){
+				if((game.global.otherPlayers[i]!=undefined)&&(game.global.otherPlayers[i].room==game.global.myPlayer.room)){			
+					if((game.global.otherPlayers[i].vida==0)&&(game.global.otherPlayers[i].dead==false)){
+						game.global.otherPlayers[i].dead=true;
 					let explosion = game.add.sprite(game.global.otherPlayers[i].image.x, game.global.otherPlayers[i].image.y, 'explosion')
 								explosion.animations.add('explosion')
 								explosion.anchor.setTo(0.5, 0.5)
 								explosion.scale.setTo(2, 2)
 								explosion.animations.play('explosion', 15, false, true)
 					game.global.otherPlayers[i].image.visible=false;
-					
+					}
 				}
 			}
 
