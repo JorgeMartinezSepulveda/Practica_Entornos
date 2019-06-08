@@ -19,7 +19,6 @@ window.onload = function() {
 		refreshRank : false,
 		refreshRooms : false,
 		numRooms: 0,
-		beginGame : false
 	}
 
 	// WEBSOCKET CONFIGURATOR
@@ -49,6 +48,7 @@ window.onload = function() {
 			game.global.myPlayer.id = msg.id
 			game.global.myPlayer.shipType = msg.shipType
 			game.global.myPlayer.room=undefined;
+			game.global.myPlayer.inMatch=false;
 			if (game.global.DEBUG_MODE) {
 				console.log('[DEBUG] ID assigned to player: ' + game.global.myPlayer.id)
 			}
@@ -57,11 +57,34 @@ window.onload = function() {
 			if (msg.respuesta=="jugador ha entrado"){
 				game.global.myPlayer.room=msg.roomName
 				console.log(msg.roomName);
+				
+				let msg2 = new Object()
+				msg2.event = 'CHECK ROOM'
+				msg2.room=msg.roomName
+				game.global.socket.send(JSON.stringify(msg2))
 			}
 			else{
 				console.log("error")
 			}
 			break
+		case 'BEGIN MATCH':
+			console.log("begin match")
+			for (var player of msg.players){
+				if(game.global.otherPlayers[player.id]!==undefined){
+					game.global.otherPlayers[player.id].vida=player.vida;
+					game.global.otherPlayers[player.id].fuel=player.fuel;
+					game.global.otherPlayers[player.id].room=player.room;
+					game.global.otherPlayers[player.id].dead=false;
+				}
+				if(game.global.myPlayer.room==player.room){
+					game.global.myPlayer.vida=player.vida;
+					game.global.myPlayer.fuel=player.fuel;
+					game.global.myPlayer.dead=false;
+					game.global.myPlayer.inMatch=true;
+				}
+			}
+			break;
+			
 		case 'NEW ROOM' :
 			if (game.global.DEBUG_MODE) {
 				console.log('[DEBUG] NEW ROOM message recieved')
