@@ -19,6 +19,10 @@ window.onload = function() {
 		refreshRank : false,
 		refreshRooms : false,
 		numRooms: 0,
+		enemiesLeft:0,
+		paused:false,
+		allReady:false,
+		won:false
 	}
 
 	// WEBSOCKET CONFIGURATOR
@@ -49,42 +53,88 @@ window.onload = function() {
 			game.global.myPlayer.shipType = msg.shipType
 			game.global.myPlayer.room=undefined;
 			game.global.myPlayer.inMatch=false;
-			if (game.global.DEBUG_MODE) {
-				console.log('[DEBUG] ID assigned to player: ' + game.global.myPlayer.id)
+			game.global.myPlayer.end=false;
+			game.global.myPlayer.forcedEnd=false;
+			console.log('[DEBUG] ID assigned to player: ' + game.global.myPlayer.id)
+			console.log(msg.players)
+			for(var player of msg.players){
+				if(game.global.myPlayer.id!=player.id){
+					console.log("nuts")
+					game.global.otherPlayers[player.id]=new Object()
+					game.global.otherPlayers[player.id].id=player.id
+				}
 			}
 			break
 		case 'JOIN ROOM':
 			if (msg.respuesta=="jugador ha entrado"){
 				game.global.myPlayer.room=msg.roomName
 				console.log(msg.roomName);
-				
+
 				let msg2 = new Object()
 				msg2.event = 'CHECK ROOM'
-				msg2.room=msg.roomName
-				game.global.socket.send(JSON.stringify(msg2))
+					msg2.room=msg.roomName
+					game.global.socket.send(JSON.stringify(msg2))
 			}
 			else{
 				console.log("error")
 			}
 			break
+		case 'READY':
+			for(var i=0;i<game.global.otherPlayers.length;i++){
+				if((game.global.otherPlayers[i]!=undefined)&&(game.global.otherPlayers[i].id==msg.id)){
+					game.global.otherPlayers[i].ready=true
+					console.log("fjklhgkjahgjkaefhgkjaehgkjeahgkjeahgkjeahgkjeahgkjeahglae"+game.global.otherPlayers[i].ready)
+
+				}
+			}
+			break;
 		case 'BEGIN MATCH':
 			console.log("begin match")
 			for (var player of msg.players){
-				if(game.global.otherPlayers[player.id]!==undefined){
-					game.global.otherPlayers[player.id].vida=player.vida;
-					game.global.otherPlayers[player.id].fuel=player.fuel;
-					game.global.otherPlayers[player.id].room=player.room;
-					game.global.otherPlayers[player.id].dead=false;
-				}
+				console.log("other player")
 				if(game.global.myPlayer.room==player.room){
 					game.global.myPlayer.vida=player.vida;
 					game.global.myPlayer.fuel=player.fuel;
 					game.global.myPlayer.dead=false;
 					game.global.myPlayer.inMatch=true;
+					game.global.myPlayer.won=false;
+					let msg2=new Object();
+					msg2.event="UPDATE PLAYER STATE";
+					msg2.status="Playing";
+					game.global.socket.send(JSON.stringify(msg2));
+				}
+				if(game.global.otherPlayers[player.id]!=undefined){
+					game.global.otherPlayers[player.id].vida=player.vida;
+					game.global.otherPlayers[player.id].fuel=player.fuel;
+					game.global.otherPlayers[player.id].room=player.room;
+					game.global.otherPlayers[player.id].dead=false;
+					game.global.otherPlayers[player.id].ready=false;
+				}
+
+			}
+			//indicamos al servidor que estamos ready
+
+			let msg3=new Object();
+			msg3.event="IM READY";
+			game.global.socket.send(JSON.stringify(msg3))
+
+			break;
+
+		case 'FORCE END MATCH':
+			console.log("end match")
+			if (msg.room==game.global.myPlayer.room){
+				game.global.myPlayer.forcedEnd=true;
+			}
+			if(game.global.otherPlayers[msg.id]!=undefined){
+				if(game.global.otherPlayers[msg.id].image!=undefined){
+					game.global.otherPlayers[msg.id].image.destroy()
+					delete game.global.otherPlayers[msg.id]
+				}
+				else{
+					delete game.global.otherPlayers[msg.id]
 				}
 			}
 			break;
-			
 		case 'NEW ROOM' :
 			if (game.global.DEBUG_MODE) {
 				console.log('[DEBUG] NEW ROOM message recieved')
@@ -186,12 +236,12 @@ window.onload = function() {
 							game.global.myPlayer.fuel=player.fuel
 							game.global.myPlayer.vida=player.vida
 						} else {
-							if (typeof game.global.otherPlayers[player.id] == 'undefined') {
+							if (typeof game.global.otherPlayers[player.id].image == 'undefined') {
 								game.global.otherPlayers[player.id] = {
 										image : game.add.sprite(player.posX, player.posY, 'spacewar', player.shipType)
 								}
 								game.global.otherPlayers[player.id].image.anchor.setTo(0.5, 0.5)
-							} else {
+							} else if(game.global.otherPlayers[player.id]!=undefined) {
 								game.global.otherPlayers[player.id].image.x = player.posX
 								game.global.otherPlayers[player.id].image.y = player.posY
 								game.global.otherPlayers[player.id].image.angle = player.facingAngle
@@ -254,13 +304,17 @@ window.onload = function() {
 				}
 			}
 			break
+		case 'HOST LEFT':
+			console.log("HOST LEFT THE SESSION");
+			break;
 		case 'REMOVE PLAYER' :
 			if (game.global.DEBUG_MODE) {
 				console.log('[DEBUG] REMOVE PLAYER message recieved')
 				console.dir(msg.players)
 			}
-			game.global.otherPlayers[msg.id].image.destroy()
-			delete game.global.otherPlayers[msg.id]
+			if(game.global.otherPlayers[msg.id]!=undefined){
+				delete game.global.otherPlayers[msg.id]
+			}
 		default :
 			console.dir(msg)
 			break
