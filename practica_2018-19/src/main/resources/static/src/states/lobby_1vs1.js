@@ -252,7 +252,7 @@ Spacewar.lobby_1vs1State.prototype = {
 			if(game.global.myPlayer.inMatch == true)
 			{
 				game.global.myPlayer.inMatch = false
-				this.game.time.events.add(Phaser.Timer.SECOND*2, function(){this.game.state.start('gameState');}, this);
+				this.game.time.events.add(Phaser.Timer.SECOND, function(){this.game.state.start('gameState');}, this);
 			}
 
 			if(game.global.refreshRooms == true)
