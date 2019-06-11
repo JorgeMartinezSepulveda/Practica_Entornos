@@ -21,6 +21,9 @@ public class SpacewarGame {
 
 	public final static SpacewarGame INSTANCE = new SpacewarGame();
 
+	public static final int fuelValue=5000;
+	public static final int vidaValue=100;
+	
 	private final static int FPS = 30;
 	private final static long TICK_DELAY = 1000 / FPS;
 	public final static boolean DEBUG_MODE = true;

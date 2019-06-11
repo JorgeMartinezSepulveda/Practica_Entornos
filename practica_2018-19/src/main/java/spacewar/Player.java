@@ -13,16 +13,18 @@ public class Player extends Spaceship {
 	private final int playerId;
 	private final String shipType;
 	private String name;
-	public AtomicInteger vida=new AtomicInteger(100);
+	public AtomicInteger vida=new AtomicInteger(SpacewarGame.vidaValue);
 	private AtomicInteger puntuacion=new AtomicInteger();
 	private Semaphore isHit=new Semaphore(1);
 	private String room;
+	private String status;
 
 	public Player(int playerId, WebSocketSession session) {
 		this.playerId = playerId;
 		this.session = session;
 		this.shipType = this.getRandomShipType();
 		this.name = null;
+		this.status="Not Playing";
 	}
 	
 
@@ -78,7 +80,10 @@ public class Player extends Spaceship {
 		 int i=Integer.parseInt(puntuaciones);
 		 this.puntuacion.getAndAdd(i);
 	 }
-
+	public void setPuntuacion(int i) {
+		this.puntuacion.getAndAdd(i);
+		
+	}
 
 	public int getPuntuacion() {
 		// TODO Auto-generated method stub
@@ -100,5 +105,30 @@ public class Player extends Spaceship {
 	public void setRoom(String room) {
 		this.room = room;
 	}
+
+
+	public String getStatus() {
+		return status;
+	}
+
+
+	public void setStatus(String status) {
+		this.status = status;
+	}
+	
+	public void resetPlayer() {
+		this.setRoom("");
+		this.setVida(SpacewarGame.vidaValue);
+		this.setFuel(SpacewarGame.fuelValue);
+		this.setStatus("Not Playing");
+	}
+
+
+	private void setVida(int i) {
+		this.vida.set(i);
+	}
+
+
+
 		
 }

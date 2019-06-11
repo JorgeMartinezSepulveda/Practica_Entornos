@@ -78,7 +78,7 @@ public class Room {
 			if(!numeroJugadores.compareAndSet(0,0)) {
 				this.jugadores.remove(j.getSession().getId());
 				this.numeroJugadores.getAndDecrement();
-				j.setRoom("");
+				j.resetPlayer();
 				sem.release();
 				return true;
 			}
@@ -88,8 +88,8 @@ public class Room {
 			}
 	}
 	
-	public synchronized String getNumeroJugadores(){
-		return this.numeroJugadores.toString();
+	public int getNumeroJugadores(){
+		return this.numeroJugadores.get();
 	}
 	
 }
