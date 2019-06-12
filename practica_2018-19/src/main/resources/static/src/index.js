@@ -83,7 +83,6 @@ window.onload = function() {
 			for(var i=0;i<game.global.otherPlayers.length;i++){
 				if((game.global.otherPlayers[i]!=undefined)&&(game.global.otherPlayers[i].id==msg.id)){
 					game.global.otherPlayers[i].ready=true
-					console.log("fjklhgkjahgjkaefhgkjaehgkjeahgkjeahgkjeahgkjeahgkjeahglae"+game.global.otherPlayers[i].ready)
 
 				}
 			}
@@ -150,7 +149,7 @@ window.onload = function() {
 			break
 		case 'ROOMS':
 			if(msg.numSalas=="0"){
-				console.log("aun no hay salas")
+				//vaciame las salas
 			}
 			else{
 				if(msg.numSalas != game.global.numRooms){
