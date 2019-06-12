@@ -145,7 +145,6 @@ Spacewar.gameState.prototype = {
 								//cargamos la animacion de morir
 								if((game.global.otherPlayers[i].vida==0)&&(game.global.otherPlayers[i].dead==false)){
 									game.global.enemiesLeft-=1
-									console.log("lolo"+game.global.enemiesLeft)
 									game.global.otherPlayers[i].dead=true;
 									let explosion = game.add.sprite(game.global.otherPlayers[i].image.x, game.global.otherPlayers[i].image.y, 'explosion')
 									explosion.animations.add('explosion')
