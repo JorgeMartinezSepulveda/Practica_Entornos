@@ -297,7 +297,7 @@ public class WebsocketGameHandler extends TextWebSocketHandler {
 				room.removePlayer(player);
 				//si la sala esta vacia la borramos
 				if(room.getNumeroJugadores()==0) {
-					game.removeSala(room.getNombre());
+					game.deleteRoom(room.getNombre());
 				}
 				lock.unlock();
 				break;
@@ -415,7 +415,9 @@ public class WebsocketGameHandler extends TextWebSocketHandler {
 				ObjectNode msg2=mapper.createObjectNode();
 				msg2.put("event","HOST LEFT");
 				msg2.put("room", auxRoom);
-				game.removeSala(auxRoom);
+				System.out.println("pre num salas /// "+game.getNumSalas());
+				game.deleteRoom(auxRoom);
+				System.out.println("num salas /// "+game.getNumSalas());
 			}
 			//finalmente, borramos al jugador del registro de player
 			ObjectNode msg = mapper.createObjectNode();
