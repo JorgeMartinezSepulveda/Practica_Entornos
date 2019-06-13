@@ -2,7 +2,7 @@ Spacewar.gameState = function(game) {
 	this.bulletTime
 	this.fireBullet
 	this.numStars = 100 // Should be canvas size dependant
-	this.maxProjectiles = 100 // 8 per player
+	this.maxProjectiles = 1000 // 8 per player
 }
 
 Spacewar.gameState.prototype = {
