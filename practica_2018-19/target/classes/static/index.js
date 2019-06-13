@@ -22,7 +22,7 @@ window.onload = function() {
 	}
 
 	// WEBSOCKET CONFIGURATOR
-	game.global.socket = new WebSocket("ws://192.168.0.18:8090/spacewar")
+	game.global.socket = new WebSocket("ws://192.168.1.52:8090/spacewar")
 	
 	game.global.socket.onopen = () => {
 		if (game.global.DEBUG_MODE) {
@@ -177,6 +177,7 @@ window.onload = function() {
 						game.global.projectiles[projectile.id].image.visible = false
 					}
 				}
+		
 			}
 			break
 		case 'REMOVE PLAYER' :

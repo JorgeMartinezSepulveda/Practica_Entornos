@@ -79,9 +79,9 @@ Spacewar.lobby_1vs1State.prototype = {
 				sprite.scale.setTo(random, random)
 			}
 
-			$('#chat').val("__________________________________________________________"+ "\n" 
+			$('#chat').val("______________________________________________________"+ "\n" 
 					+ "\n" + "/* Entra en una sala para empezar a jugar o crea una nueva e invita a tus amigos */" 
-					+ "\n" + "__________________________________________________________"  + "\n")
+					+ "\n" + "______________________________________________________"  + "\n")
 		},
 
 		create : function() {
@@ -187,6 +187,12 @@ Spacewar.lobby_1vs1State.prototype = {
 					game.global.socket.send(JSON.stringify(message));
 				
 				}
+			} else{
+				var textarea = document.getElementById('chat');
+				$('#chat').val($('#chat').val() + "\n" +"______________________________________________________"+ "\n" 
+						+ "\n" + "/* Ya estas en una sala, no puedes acceder a otra ni a tu misma sala de nuevo */" 
+						+ "\n" + "______________________________________________________"  + "\n");
+				textarea.scrollTop = textarea.scrollHeight;
 			}
 
 		},

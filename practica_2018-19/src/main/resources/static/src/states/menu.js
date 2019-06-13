@@ -74,6 +74,9 @@ Spacewar.menuState.prototype = {
 		this.button1 = this.game.add.button(317, 453, 'Boton2', this.actionOnClick2, this,1,0);
 		this.button1.width = 45;
 		this.button1.height = 45;
+		this.buttonX=this.game.add.button(500,500,'DEBUG',function(){
+			this.game.state.start('gameState');
+		});
 		
 		this.panel = this.game.add.sprite(500, 60, 'Panel_leadership');
 		this.panel.width = 420

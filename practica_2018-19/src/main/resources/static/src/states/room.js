@@ -11,11 +11,11 @@ Spacewar.roomState.prototype = {
 	},
 
 	preload : function() {
-
+		console.log("waiting");
 	},
 
 	create : function() {
-
+		
 	},
 
 	update : function() {
