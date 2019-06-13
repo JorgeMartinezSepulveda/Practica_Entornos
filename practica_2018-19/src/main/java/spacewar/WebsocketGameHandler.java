@@ -80,6 +80,7 @@ public class WebsocketGameHandler extends TextWebSocketHandler {
 				for (Player participant : players) {
 					ObjectNode jsonPlayer = mapper.createObjectNode();
 					jsonPlayer.put("id", participant.getPlayerId());
+					jsonPlayer.put("nombre", participant.getName());
 					jsonPlayer.put("fuel", participant.getFuel());
 					jsonPlayer.put("room",participant.getRoom());
 					jsonPlayer.put("vida", participant.getVida());
@@ -280,15 +281,6 @@ public class WebsocketGameHandler extends TextWebSocketHandler {
 					player.getSession().sendMessage(new TextMessage(msg.toString()));
 				}
 				break;
-
-			case "IM READY":
-				lock.lock();
-				msg.put("event","READY");
-				msg.put("id", player.getPlayerId());
-				game.broadcast(msg.toString());
-				lock.unlock();
-				break;
-
 				//acabar partida de manera natural!!
 			case "END MATCH":
 				lock.lock();

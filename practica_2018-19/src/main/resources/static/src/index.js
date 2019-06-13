@@ -21,7 +21,6 @@ window.onload = function() {
 		numRooms: 0,
 		enemiesLeft:0,
 		paused:false,
-		allReady:false,
 		won:false
 	}
 
@@ -66,6 +65,7 @@ window.onload = function() {
 				if((game.global.myPlayer.id!=player.id)&&(game.global.otherPlayers[player.id]==undefined)){
 					game.global.otherPlayers[player.id]=new Object()
 					game.global.otherPlayers[player.id].id=player.id
+					game.global.otherPlayers[player.id].nombre=player.nombre
 				}
 			}
 			break
@@ -83,14 +83,6 @@ window.onload = function() {
 				console.log("error")
 			}
 			break
-		case 'READY':
-			for(var i=0;i<game.global.otherPlayers.length;i++){
-				if((game.global.otherPlayers[i]!=undefined)&&(game.global.otherPlayers[i].id==msg.id)){
-					game.global.otherPlayers[i].ready=true
-
-				}
-			}
-			break;
 		case 'BEGIN MATCH':
 			console.log("begin match")
 			for (var player of msg.players){
@@ -112,16 +104,9 @@ window.onload = function() {
 					game.global.otherPlayers[player.id].fuel=player.fuel;
 					game.global.otherPlayers[player.id].room=player.room;
 					game.global.otherPlayers[player.id].dead=false;
-					game.global.otherPlayers[player.id].ready=false;
 				}
 
 			}
-			//indicamos al servidor que estamos ready
-
-			let msg3=new Object();
-			msg3.event="IM READY";
-			game.global.socket.send(JSON.stringify(msg3))
-
 			break;
 
 		case 'FORCE END MATCH':
@@ -196,8 +181,6 @@ window.onload = function() {
 
 				for(var sala of msg.salas)
 				{
-					console.log("/IndexDebug/ Nombre sala jugador: " + game.global.myPlayer.room)
-					console.log("/IndexDebug/ Nombre sala comprobada: " + sala.nombre)
 					if(sala.nombre == game.global.myPlayer.room)
 					{
 						if(sala.jugadores == "2")
@@ -240,10 +223,10 @@ window.onload = function() {
 							game.global.myPlayer.fuel=player.fuel
 							game.global.myPlayer.vida=player.vida
 							game.global.myPlayer.ammo=player.ammo
-							console.log("i am "+game.global.myPlayer.id);
-							console.log("and i should be"+player.id);
-							console.log("my ammo is "+game.global.myPlayer.ammo);
-							console.log("and it should be"+player.ammo)
+							//console.log("i am "+game.global.myPlayer.id);
+							//console.log("and i should be"+player.id);
+							//console.log("my ammo is "+game.global.myPlayer.ammo);
+							//console.log("and it should be"+player.ammo)
 						} else {
 							if (typeof game.global.otherPlayers[player.id].image == 'undefined') {
 								game.global.otherPlayers[player.id] = {

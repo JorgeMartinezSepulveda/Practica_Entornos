@@ -3,6 +3,7 @@ Spacewar.gameState = function(game) {
 	this.fireBullet
 	this.numStars = 100 // Should be canvas size dependant
 	this.maxProjectiles = 1000 // 8 per player
+	this.letras_titulo1
 }
 
 Spacewar.gameState.prototype = {
@@ -73,24 +74,11 @@ Spacewar.gameState.prototype = {
 
 			game.camera.follow(game.global.myPlayer.image);
 
-
+			this.letras_titulo1 = this.game.add.text(600, 505,"Pinchugas",{font: " 18px Arial", fill: 'white'});
 
 		},
 
 		update : function() {
-			for(var i=0;i<game.global.otherPlayers.length;i++){
-				if((game.global.otherPlayers[i]!=undefined)&&(game.global.otherPlayers[i].room==game.global.myPlayer.room)){
-					if(game.global.otherPlayers[i].ready==true){
-						game.global.allReady=true
-					}
-					else{
-						game.global.allReady=false
-					}
-
-					console.log("this player is"+game.global.otherPlayers[i].ready)
-				}
-				console.log("i am "+game.global.allReady)
-				if(game.global.allReady){
 					if(game.global.myPlayer.forcedEnd){
 						//si no estamos muertos es que el rival abandona, lo que nos da la victoria
 						if(!game.global.myPlayer.dead){
@@ -135,13 +123,21 @@ Spacewar.gameState.prototype = {
 						for(var i=0;i<game.global.otherPlayers.length;i++){
 							//si el jugador rival existe y es de mi sala comprobamos su vida
 							if((game.global.otherPlayers[i]!=undefined)&&(game.global.otherPlayers[i].room==game.global.myPlayer.room)){
-
+								
+								if(game.global.otherPlayers[i].image!=undefined){
+									this.letras_titulo1.x = game.global.otherPlayers[i].image.x
+									this.letras_titulo1.y = (game.global.otherPlayers[i].image.y - 50)
+								}
+								
 								//contamos cuantos rivales vivos hay
 								if(game.global.otherPlayers[i].dead==false){
 						
 									game.global.enemiesLeft+=1
 									
 								}
+								
+								console.log("Jolimbo master race: " + game.global.otherPlayers[i].dead)
+								
 								//cargamos la animacion de morir
 								if((game.global.otherPlayers[i].vida==0)&&(game.global.otherPlayers[i].dead==false)){
 									game.global.enemiesLeft-=1
@@ -214,8 +210,8 @@ Spacewar.gameState.prototype = {
 						game.global.socket.send(JSON.stringify(msg))
 						
 					}
-				}
+				
 
-			}
+			
 		}
 }
