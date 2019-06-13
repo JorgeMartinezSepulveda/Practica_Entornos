@@ -289,11 +289,13 @@ public class WebsocketGameHandler extends TextWebSocketHandler {
 					player.setPuntuacion(player.getPuntuacion()+100);
 				}
 				//borramos al jugador de la sala
-				Room room=game.getSalas().get(player.getRoom());
-				room.removePlayer(player);
-				//si la sala esta vacia la borramos
-				if(room.getNumeroJugadores()==0) {
-					game.deleteRoom(room.getNombre());
+				if(!game.getSalas().get(player.getRoom()).equals("")) {
+					Room room=game.getSalas().get(player.getRoom());
+					room.removePlayer(player);
+					//si la sala esta vacia la borramos
+					if(room.getNumeroJugadores()==0) {
+						game.deleteRoom(room.getNombre());
+					}
 				}
 				lock.unlock();
 				break;

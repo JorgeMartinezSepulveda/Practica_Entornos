@@ -27,6 +27,7 @@ Spacewar.lobby_1vs1State = function(game) {
 			this.button10	
 
 			this.nombreJugador
+			this.nombreJugador2
 
 			this.texto_numJugadores1  = 0
 			this.texto_numJugadores2  = 0
@@ -160,8 +161,10 @@ Spacewar.lobby_1vs1State.prototype = {
 			this.panel_usuarios.height = 150
 			this.panel_usuarios.alpha = 0
 
-			this.nombreJugador = this.game.add.text(810, 235,"1. Nombre",{font: " 18px Arial", fill: 'white'});
+			this.nombreJugador = this.game.add.text(810, 235, "1. _______",{font: " 18px Arial", fill: 'white'});
 			this.nombreJugador.alpha = 0
+			this.nombreJugador2 = this.game.add.text(810, 275,"2. _______",{font: " 18px Arial", fill: 'white'});
+			this.nombreJugador2.alpha = 0
 
 			setInterval(function(){
 				let message={
@@ -411,7 +414,11 @@ Spacewar.lobby_1vs1State.prototype = {
 				this.panel_usuarios.y = this.button1.y+40
 				this.nombreJugador.y = 235 
 				this.nombreJugador.alpha = 1
+				this.nombreJugador2.alpha = 1
 				this.nombreJugador.setText("1. " + game.global.onevsoneRoom[0].usuarios[0])
+				if(game.global.onevsoneRoom[0].usuarios[1] != undefined){
+					this.nombreJugador2.setText("2. " + game.global.onevsoneRoom[0].usuarios[1])
+				}
 			}
 			else if(this.button2.input.pointerOver())
 			{
@@ -420,6 +427,9 @@ Spacewar.lobby_1vs1State.prototype = {
 				this.nombreJugador.y = this.button2.y+100
 				this.nombreJugador.alpha = 1
 				this.nombreJugador.setText("1. " + game.global.onevsoneRoom[1].usuarios[0])
+				if(game.global.onevsoneRoom[1].usuarios[1] != undefined){
+					this.nombreJugador2.setText("2. " + game.global.onevsoneRoom[1].usuarios[1])
+				}
 			}
 			else if(this.button3.input.pointerOver())
 			{
@@ -428,6 +438,9 @@ Spacewar.lobby_1vs1State.prototype = {
 				this.nombreJugador.y = this.button3.y+100
 				this.nombreJugador.alpha = 1
 				this.nombreJugador.setText("1. " + game.global.onevsoneRoom[2].usuarios[0])
+				if(game.global.onevsoneRoom[2].usuarios[1] != undefined){
+					this.nombreJugador2.setText("2. " + game.global.onevsoneRoom[2].usuarios[1])
+				}
 			}
 			else if(this.button4.input.pointerOver())
 			{
@@ -436,6 +449,9 @@ Spacewar.lobby_1vs1State.prototype = {
 				this.nombreJugador.y = this.button4.y+100
 				this.nombreJugador.alpha = 1
 				this.nombreJugador.setText("1. " + game.global.onevsoneRoom[3].usuarios[0])
+				if(game.global.onevsoneRoom[3].usuarios[1] != undefined){
+					this.nombreJugador2.setText("2. " + game.global.onevsoneRoom[3].usuarios[1])
+				}
 			}
 			else if(this.button5.input.pointerOver())
 			{
@@ -444,6 +460,9 @@ Spacewar.lobby_1vs1State.prototype = {
 				this.nombreJugador.y = this.button5.y+100
 				this.nombreJugador.alpha = 1
 				this.nombreJugador.setText("1. " + game.global.onevsoneRoom[4].usuarios[0])
+				if(game.global.onevsoneRoom[4].usuarios[1] != undefined){
+					this.nombreJugador2.setText("2. " + game.global.onevsoneRoom[4].usuarios[1])
+				}
 			}
 			else if(this.button6.input.pointerOver())
 			{
@@ -452,6 +471,9 @@ Spacewar.lobby_1vs1State.prototype = {
 				this.nombreJugador.y = this.button6.y+100
 				this.nombreJugador.alpha = 1
 				this.nombreJugador.setText("1. " + game.global.onevsoneRoom[5].usuarios[0])
+				if(game.global.onevsoneRoom[5].usuarios[1] != undefined){
+					this.nombreJugador2.setText("2. " + game.global.onevsoneRoom[5].usuarios[1])
+				}
 			}
 			else if(this.button7.input.pointerOver())
 			{
@@ -460,6 +482,9 @@ Spacewar.lobby_1vs1State.prototype = {
 				this.nombreJugador.y = this.button7.y+100
 				this.nombreJugador.alpha = 1
 				this.nombreJugador.setText("1. " + game.global.onevsoneRoom[6].usuarios[0])
+				if(game.global.onevsoneRoom[6].usuarios[1] != undefined){
+					this.nombreJugador2.setText("2. " + game.global.onevsoneRoom[6].usuarios[1])
+				}
 			}
 			else if(this.button8.input.pointerOver())
 			{
@@ -468,6 +493,9 @@ Spacewar.lobby_1vs1State.prototype = {
 				this.nombreJugador.y = this.button3.y+100
 				this.nombreJugador.alpha = 1
 				this.nombreJugador.setText("1. " + game.global.onevsoneRoom[7].usuarios[0])
+				if(game.global.onevsoneRoom[7].usuarios[1] != undefined){
+					this.nombreJugador2.setText("2. " + game.global.onevsoneRoom[7].usuarios[1])
+				}
 			}
 			else if(this.button9.input.pointerOver())
 			{
@@ -476,6 +504,9 @@ Spacewar.lobby_1vs1State.prototype = {
 				this.nombreJugador.y = this.button4.y+100
 				this.nombreJugador.alpha = 1
 				this.nombreJugador.setText("1. " + game.global.onevsoneRoom[8].usuarios[0])
+				if(game.global.onevsoneRoom[8].usuarios[1] != undefined){
+					this.nombreJugador2.setText("2. " + game.global.onevsoneRoom[8].usuarios[1])
+				}
 			}
 			else if(this.button10.input.pointerOver())
 			{
@@ -484,10 +515,14 @@ Spacewar.lobby_1vs1State.prototype = {
 				this.nombreJugador.y = this.button5.y+100
 				this.nombreJugador.alpha = 1
 				this.nombreJugador.setText("1. " + game.global.onevsoneRoom[9].usuarios[0])
+				if(game.global.onevsoneRoom[9].usuarios[1] != undefined){
+					this.nombreJugador2.setText("2. " + game.global.onevsoneRoom[9].usuarios[1])
+				}
 			}
 			else
 			{
 				this.nombreJugador.alpha = 0
+				this.nombreJugador2.alpha = 0
 				this.panel_usuarios.alpha = 0
 			}
 		}

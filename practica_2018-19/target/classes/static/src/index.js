@@ -21,7 +21,6 @@ window.onload = function() {
 		numRooms: 0,
 		enemiesLeft:0,
 		paused:false,
-		won:false
 	}
 
 	// WEBSOCKET CONFIGURATOR
@@ -93,7 +92,6 @@ window.onload = function() {
 					game.global.myPlayer.dead=false;
 					game.global.myPlayer.ammo=player.ammo;
 					game.global.myPlayer.inMatch=true;
-					game.global.myPlayer.won=false;
 					let msg2=new Object();
 					msg2.event="UPDATE PLAYER STATE";
 					msg2.status="Playing";
@@ -239,6 +237,7 @@ window.onload = function() {
 								game.global.otherPlayers[player.id].image.angle = player.facingAngle
 								game.global.otherPlayers[player.id].vida=player.vida;
 								game.global.otherPlayers[player.id].room=player.room;
+								game.global.otherPlayers[player.id].nombre=player.nombre;
 							}
 						}
 					}

@@ -3,7 +3,9 @@ Spacewar.gameState = function(game) {
 	this.fireBullet
 	this.numStars = 100 // Should be canvas size dependant
 	this.maxProjectiles = 1000 // 8 per player
-	this.letras_titulo1
+	this.letras_nombreJ1
+	this.letras_nombreJ2
+	this.SENT_RESULT=false
 }
 
 Spacewar.gameState.prototype = {
@@ -73,30 +75,40 @@ Spacewar.gameState.prototype = {
 				Phaser.Keyboard.SPACEBAR ]);
 
 			game.camera.follow(game.global.myPlayer.image);
+			
+			this.letras_nombreJ1 = this.game.add.text(600, 505," ",{font: " 18px Arial", fill: 'white'});
 
-			this.letras_titulo1 = this.game.add.text(600, 505,"Pinchugas",{font: " 18px Arial", fill: 'white'});
+			this.letras_nombreJ2 = this.game.add.text(600, 505," ",{font: " 18px Arial", fill: 'white'});
 
 		},
 
 		update : function() {
+			
+			if((game.global.myPlayer.image!=undefined)&&(game.global.myPlayer.name != undefined)){
+				this.letras_nombreJ1.x = (game.global.myPlayer.image.x - 50)
+				this.letras_nombreJ1.y = (game.global.myPlayer.image.y + 33)
+				this.letras_nombreJ1.setText(game.global.myPlayer.name)
+			}
+			
 					if(game.global.myPlayer.forcedEnd){
 						//si no estamos muertos es que el rival abandona, lo que nos da la victoria
-						if(!game.global.myPlayer.dead){
+						if((game.global.myPlayer.vida>0)&&(!this.SENT_RESULT)){
+							this.SENT_RESULT=true
 							let msg=new Object();
 							msg.event="END MATCH";
 							msg.result="WON";
 							game.global.socket.send(JSON.stringify(msg))
 							game.global.myPlayer.room=undefined;
-							//te echan de la sala al segundo y medio
+							//te echan de la sala al medio segundo
 							setTimeout(function(){
 								this.game.state.start('lobby_1vs1State');
-							},1500);
+							},500);
 							console.log("xWINx")
 						}
 					}
 					else{
-						if((game.global.myPlayer.vida==0)&&(!game.global.myPlayer.dead)){
-							game.global.myPlayer.dead=true;	
+						if((game.global.myPlayer.vida==0)&&(!this.SENT_RESULT)){
+							this.SENT_RESULT=true
 							//cargamos la explosion
 							let explosion = game.add.sprite(game.global.myPlayer.image.x, game.global.myPlayer.image.y, 'explosion')
 							explosion.animations.add('explosion')
@@ -111,10 +123,10 @@ Spacewar.gameState.prototype = {
 							msg.result="LOST";
 							game.global.socket.send(JSON.stringify(msg))
 							game.global.myPlayer.room=undefined;
-							//te echan de la sala al segundo y medio
+							//te echan de la sala al medio segundo
 							setTimeout(function(){
 								this.game.state.start('lobby_1vs1State');
-							},1500);
+							},500);
 							console.log("killed")
 						}
 
@@ -124,24 +136,23 @@ Spacewar.gameState.prototype = {
 							//si el jugador rival existe y es de mi sala comprobamos su vida
 							if((game.global.otherPlayers[i]!=undefined)&&(game.global.otherPlayers[i].room==game.global.myPlayer.room)){
 								
-								if(game.global.otherPlayers[i].image!=undefined){
-									this.letras_titulo1.x = game.global.otherPlayers[i].image.x
-									this.letras_titulo1.y = (game.global.otherPlayers[i].image.y - 50)
+								if((game.global.otherPlayers[i].image!=undefined)&&(game.global.otherPlayers[i].nombre != undefined)){
+									this.letras_nombreJ2.x = (game.global.otherPlayers[i].image.x - 50)
+									this.letras_nombreJ2.y = (game.global.otherPlayers[i].image.y + 50)
+									this.letras_nombreJ2.setText(game.global.otherPlayers[i].nombre)
 								}
 								
 								//contamos cuantos rivales vivos hay
-								if(game.global.otherPlayers[i].dead==false){
+								if(game.global.otherPlayers[i].vida>0){
 						
 									game.global.enemiesLeft+=1
 									
 								}
 								
-								console.log("Jolimbo master race: " + game.global.otherPlayers[i].dead)
 								
 								//cargamos la animacion de morir
-								if((game.global.otherPlayers[i].vida==0)&&(game.global.otherPlayers[i].dead==false)){
+								if(game.global.otherPlayers[i].vida==0){
 									game.global.enemiesLeft-=1
-									game.global.otherPlayers[i].dead=true;
 									let explosion = game.add.sprite(game.global.otherPlayers[i].image.x, game.global.otherPlayers[i].image.y, 'explosion')
 									explosion.animations.add('explosion')
 									explosion.anchor.setTo(0.5, 0.5)
@@ -152,20 +163,18 @@ Spacewar.gameState.prototype = {
 							}
 						}
 						//si no quedan enemigos, notificamos al servidor de que hemos ganado
-						if(game.global.enemiesLeft==0){
-							if(!game.global.won){
-								game.global.won=true
+						if((game.global.enemiesLeft==0)&&(!this.SENT_RESULT)){
+								this.SENT_RESULT=true
 								let msg=new Object();
 								msg.event="END MATCH";
 								msg.result="WON";
 								game.global.socket.send(JSON.stringify(msg))
 								game.global.myPlayer.room=undefined;
-								//te echan de la sala al segundo y medio
+								//te echan de la sala al medio segundo
 								setTimeout(function(){
 									this.game.state.start('lobby_1vs1State');
-								},3000);
-								console.log("WIN")
-							}	
+								},500);
+								console.log("WIN")	
 						}
 
 						let msg = new Object()
@@ -199,7 +208,7 @@ Spacewar.gameState.prototype = {
 									msg.movement.rotLeft = true;
 								if (this.dKey.isDown)
 									msg.movement.rotRight = true;
-								if (this.spaceKey.isDown) {
+								if ((this.spaceKey.isDown)&&(game.global.myPlayer.ammo>0)) {
 									msg.bullet = this.fireBullet()
 								}
 							}
