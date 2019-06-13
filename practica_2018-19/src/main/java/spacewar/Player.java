@@ -120,6 +120,7 @@ public class Player extends Spaceship {
 		this.setRoom("");
 		this.setVida(SpacewarGame.vidaValue);
 		this.setFuel(SpacewarGame.fuelValue);
+		this.setAmmo(SpacewarGame.ammoValue);
 		this.setStatus("Not Playing");
 	}
 

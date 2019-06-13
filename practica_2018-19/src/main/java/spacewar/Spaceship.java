@@ -10,6 +10,7 @@ public class Spaceship extends SpaceObject {
 	private static final int SPACESHIP_COLLISION_FACTOR = 400;
 	private static final double SPACE_FRICTION = 0.95;
 	private AtomicInteger fuel=new AtomicInteger(SpacewarGame.fuelValue);
+	private AtomicInteger ammo=new AtomicInteger(SpacewarGame.ammoValue);
 
 
 	class LastMovement {
@@ -72,5 +73,12 @@ public class Spaceship extends SpaceObject {
 	}
 	public void setFuel(int i) {
 		this.fuel.set(i);
+	}
+	
+	public int getAmmo() {
+		return this.ammo.get();
+	}
+	public void setAmmo(int i) {
+		this.ammo.set(i);
 	}
 }

@@ -23,6 +23,7 @@ public class SpacewarGame {
 
 	public static final int fuelValue=5000;
 	public static final int vidaValue=100;
+	public static final int ammoValue=20;
 	
 	private final static int FPS = 30;
 	private final static long TICK_DELAY = 1000 / FPS;
@@ -161,6 +162,7 @@ public class SpacewarGame {
 				jsonPlayer.put("fuel", player.getFuel());
 				jsonPlayer.put("room",player.getRoom());
 				jsonPlayer.put("vida", player.getVida());
+				jsonPlayer.put("ammo",player.getAmmo());
 				arrayNodePlayers.addPOJO(jsonPlayer);
 			}
 
