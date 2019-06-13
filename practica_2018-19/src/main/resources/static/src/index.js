@@ -56,10 +56,14 @@ window.onload = function() {
 			game.global.myPlayer.end=false;
 			game.global.myPlayer.forcedEnd=false;
 			console.log('[DEBUG] ID assigned to player: ' + game.global.myPlayer.id)
-			console.log(msg.players)
+			let msg2=new Object();
+			msg2.event='JOINED'
+			game.global.socket.send(JSON.stringify(msg2))
+			
+			break
+		case 'OTHER PLAYERS':
 			for(var player of msg.players){
-				if(game.global.myPlayer.id!=player.id){
-					console.log("nuts")
+				if((game.global.myPlayer.id!=player.id)&&(game.global.otherPlayers[player.id]==undefined)){
 					game.global.otherPlayers[player.id]=new Object()
 					game.global.otherPlayers[player.id].id=player.id
 				}
@@ -95,6 +99,7 @@ window.onload = function() {
 					game.global.myPlayer.vida=player.vida;
 					game.global.myPlayer.fuel=player.fuel;
 					game.global.myPlayer.dead=false;
+					game.global.myPlayer.ammo=player.ammo;
 					game.global.myPlayer.inMatch=true;
 					game.global.myPlayer.won=false;
 					let msg2=new Object();
@@ -234,6 +239,11 @@ window.onload = function() {
 							game.global.myPlayer.image.angle = player.facingAngle
 							game.global.myPlayer.fuel=player.fuel
 							game.global.myPlayer.vida=player.vida
+							game.global.myPlayer.ammo=player.ammo
+							console.log("i am "+game.global.myPlayer.id);
+							console.log("and i should be"+player.id);
+							console.log("my ammo is "+game.global.myPlayer.ammo);
+							console.log("and it should be"+player.ammo)
 						} else {
 							if (typeof game.global.otherPlayers[player.id].image == 'undefined') {
 								game.global.otherPlayers[player.id] = {
