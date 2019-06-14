@@ -5,6 +5,11 @@ Spacewar.lobby_1vs1State = function(game) {
 		this.letras_estado
 		this.nombreSala
 		this.estado_jugador = 'Esperando sala'
+			
+			this.marco
+			this.panel_pausa
+			this.escKey
+			
 			this.enSala = false
 
 			this.numSalas = 0
@@ -25,6 +30,9 @@ Spacewar.lobby_1vs1State = function(game) {
 			this.button8
 			this.button9
 			this.button10	
+			
+			this.button_si
+			this.button_no
 
 			this.nombreJugador
 			this.nombreJugador2
@@ -86,8 +94,15 @@ Spacewar.lobby_1vs1State.prototype = {
 		},
 
 		create : function() {
-			console.log("Lobby de 1 vs 1")
+			//console.log("Lobby de 1 vs 1")
 
+			document.getElementById("nameFolder").style.display = "block";
+			document.getElementById("message").style.display="block";
+			document.getElementById("chat").style.display="block";
+			
+			document.getElementById("nameFolder").disabled = false;
+			document.getElementById("nameFolder").style.backgroundColor = "aadef3";
+			
 			panel = this.game.add.sprite(555, 35, 'Panel_Salas');
 			panel.width = 420
 			panel.height = 530
@@ -147,7 +162,7 @@ Spacewar.lobby_1vs1State.prototype = {
 			panel_escogida1 = this.game.add.sprite(45, 35, 'Panel_Sala_Escogida');
 			panel_escogida1.width = 460
 			panel_escogida1.height = 240
-
+			
 			this.letras_sala = this.game.add.text(325, 67,this.nombre_sala,{font:"18px Arial", fill: 'white'});
 
 			this.letras_estado = this.game.add.text(275, 130,this.estado_jugador,{font:"18px Arial", fill: 'white'});
@@ -166,6 +181,22 @@ Spacewar.lobby_1vs1State.prototype = {
 			this.nombreJugador2 = this.game.add.text(810, 275,"2. _______",{font: " 18px Arial", fill: 'white'});
 			this.nombreJugador2.alpha = 0
 
+			this.marco = this.game.add.sprite(0, 0, 'Marco');
+			this.marco.width = 1024
+			this.marco.height = 600
+			this.marco.alpha = 0
+			
+			this.panel_pausa = this.game.add.sprite(230, 150, 'Panel_pausa');
+			this.panel_pausa.alpha = 0
+			
+			this.button_si = this.game.add.button(1000, 1000, 'Boton_Si', this.salir, this,1,0);
+			this.button_si.width = 60
+			this.button_si.height = 60
+			this.button_no = this.game.add.button(1000, 1000, 'Boton_No', this.salir, this,1,0);
+			this.button_no.width = 60
+			this.button_no.height = 60
+			//Boton_No
+			
 			setInterval(function(){
 				let message={
 						event : 'ROOMS'
@@ -174,7 +205,8 @@ Spacewar.lobby_1vs1State.prototype = {
 			},500);
 
 			this.enterKey =  game.input.keyboard.addKey(Phaser.Keyboard.ENTER);
-			game.input.keyboard.addKeyCapture([ Phaser.Keyboard.ENTER ]);
+			this.escKey=game.input.keyboard.addKey(Phaser.Keyboard.ESC);
+			game.input.keyboard.addKeyCapture([ Phaser.Keyboard.ENTER, Phaser.Keyboard.ESC ]);
 			// game.state.start('matchmakingState')
 		},
 
@@ -217,6 +249,11 @@ Spacewar.lobby_1vs1State.prototype = {
 				
 			}
 		},
+		
+		salir: function () 
+		{
+			//Salir al menu
+		},
 
 
 		update : function() {
@@ -232,12 +269,37 @@ Spacewar.lobby_1vs1State.prototype = {
 					this.letras_sala.setText(game.global.myPlayer.room)
 
 
-					document.getElementById("nameFolder").disabled = true;
+				document.getElementById("nameFolder").disabled = true;
 				document.getElementById("nameFolder").style.backgroundColor = "grey";
 			}
 			else{
 				console.log("error")
 			}
+			
+			if (this.escKey.justDown) {
+				if(this.marco.alpha == 0){
+					this.marco.alpha = 1
+					this.panel_pausa.alpha = 1
+					this.button_si.x = 380
+					this.button_si.y = 320
+					this.button_no.x = 580
+					this.button_no.y = 320
+					document.getElementById("nameFolder").style.display = "none";
+					document.getElementById("message").style.display="none";
+					document.getElementById("chat").style.display="none";
+				}else{
+					this.marco.alpha = 0
+					this.panel_pausa.alpha = 0
+					this.button_si.x = 1000
+					this.button_si.y = 1000
+					this.button_no.x = 1000
+					this.button_no.y = 1000
+					document.getElementById("nameFolder").style.display = "block";
+					document.getElementById("message").style.display="block";
+					document.getElementById("chat").style.display="block";
+				}
+			}
+			
 			if (this.enterKey.justDown) {
 				var input2 = $('#message');
 				messageP = input2.val();
@@ -342,9 +404,9 @@ Spacewar.lobby_1vs1State.prototype = {
 							switch(this.numSalas){
 							case 0:
 								this.button1.x = this.button1.x - this.cordX
-								this.texto_sala1 = game.global.onevsoneRoom[this.numSalas+(game.global.pagRooms*10)].nombre
-								this.letras_titulo1.setText("Sala " + this.texto_sala1)
-								this.numSalas = 1
+								this.texto_sala1 = "Empty slot 1"
+								this.letras_titulo1.setText(this.texto_sala1)
+								this.numSalas = this.numSalas - 1
 								break;
 							case 1:
 								this.button2.x = this.button2.x - this.cordX
