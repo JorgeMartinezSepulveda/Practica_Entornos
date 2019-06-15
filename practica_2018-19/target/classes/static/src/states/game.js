@@ -79,7 +79,11 @@ Spacewar.gameState.prototype = {
 			this.letras_nombreJ1 = this.game.add.text(600, 505," ",{font: " 18px Arial", fill: 'white'});
 
 			this.letras_nombreJ2 = this.game.add.text(600, 505," ",{font: " 18px Arial", fill: 'white'});
-
+			
+			this.power  = this.game.add.sprite(300, 300, 'Power_vida');
+			this.power2 = this.game.add.sprite(350, 300, 'Power_ammo');
+			this.power3 = this.game.add.sprite(400, 300, 'Power_fuel');
+			//Power_ammo
 		},
 
 		update : function() {

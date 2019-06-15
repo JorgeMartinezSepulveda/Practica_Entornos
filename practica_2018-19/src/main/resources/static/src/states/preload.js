@@ -35,6 +35,9 @@ Spacewar.preloadState.prototype = {
 		this.load.image('Barra_Vida_Back', 'assets/images/barravidabg.png');
 		this.load.image('Marco', 'assets/images/Mascara.png');
 		this.load.image('Panel_pausa', 'assets/images/Panel_pausa.png');
+		this.load.image('Power_vida', 'assets/images/Power_Vida.png');
+		this.load.image('Power_ammo', 'assets/images/Power_Ammo.png');
+		this.load.image('Power_fuel', 'assets/images/Power_Fuel.png');
 		//Boton_Si
 	},
 
